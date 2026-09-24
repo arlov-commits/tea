@@ -5,6 +5,13 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Pressed Tea Brew Chart</title>
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='31' fill='%232f6f68'/%3E%3Ccircle cx='32' cy='32' r='26' fill='none' stroke='%239fd0c8' stroke-width='3' stroke-dasharray='2.6 3.2'/%3E%3Ccircle cx='32' cy='32' r='19' fill='%23f3ead2'/%3E%3Cpath d='M32 17c9 6 10 17 0 30c-10-13-9-24 0-30z' fill='%232f6f68'/%3E%3Cpath d='M32 22v21' stroke='%23f3ead2' stroke-width='1.8' stroke-linecap='round'/%3E%3C/svg%3E">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<meta name="theme-color" content="#2f6f68">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Tea Chart">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@600;700&family=Public+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500&display=swap">
@@ -139,6 +146,52 @@ tbody tr.gstart td,tbody tr.gstart th{border-top:2px solid var(--line-strong)}
 .sources p{margin:0}
 a{color:var(--accent)}
 a:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+/* mobile cards: built from the tables by script, shown only on narrow screens */
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
+.cards{display:none}
+@media (max-width:720px){
+  body{
+    padding-left:max(16px,env(safe-area-inset-left));padding-right:max(16px,env(safe-area-inset-right));
+    padding-bottom:max(48px,env(safe-area-inset-bottom));
+  }
+  .wrap{gap:28px}
+  .filters{
+    position:sticky;top:0;z-index:5;background:var(--bg);
+    margin-inline:-16px;padding:8px 16px;border-bottom:1px solid var(--line);
+    padding-top:max(8px,env(safe-area-inset-top));
+    flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;
+  }
+  .filters::-webkit-scrollbar{display:none}
+  .filters .label{display:none}
+  .chip{min-height:40px;padding:8px 14px;font-size:13.5px;white-space:nowrap;flex-shrink:0}
+  .chip::before{display:none}
+  .field input,.field select{font-size:16px;min-height:40px}
+  .calc-row .field{flex:1 1 140px}
+  .field input{width:100%}
+  th,td{padding:8px 9px}
+  .scroll.cardify{display:none}
+  .cards{display:flex;flex-direction:column;gap:10px}
+  .cgroup{display:flex;align-items:baseline;gap:8px;margin:10px 0 0;font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+  .cgroup:first-child{margin-top:0}
+  .cgroup .zh{font-size:19px;color:var(--ink);letter-spacing:.1em;text-transform:none}
+  .card{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px 14px;display:flex;flex-direction:column;gap:10px;font-size:14px}
+  .card-t .tea{min-width:0}
+  .card-t .zh{font-size:17px}
+  .card dl{margin:0}
+  .card dd{margin:0}
+  .card .num{white-space:normal}
+  .card dt{font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);font-weight:600}
+  .kv{display:grid;grid-template-columns:minmax(64px,auto) 1fr;gap:6px 12px;align-items:baseline}
+  .cg{border-top:1px solid var(--line);padding-top:8px}
+  .cg h4{margin:0 0 6px;font-size:13px}
+  .cg h4 small{font-weight:500;color:var(--muted);margin-left:6px}
+  .cg dl{display:grid;grid-template-columns:1fr 1fr;gap:10px 12px}
+  .cg dl>div{display:flex;flex-direction:column;gap:2px}
+  .card .basis{min-width:0;font-size:12px}
+  .show-flask .card .v-flask,.show-gaiwan .card .v-gaiwan,.show-teapot .card .v-teapot,
+  .show-short .card .v-short,.show-flask .card .v-long{display:block}
+}
 </style>
 
 </head>
@@ -158,7 +211,7 @@ a:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 
   <section>
     <div class="scroll">
-      <table>
+      <table data-cards data-title="1" data-group="0">
         <thead>
           <tr>
             <th rowspan="2">Type</th>
@@ -326,7 +379,7 @@ a:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
     <h2>Principles by tea type</h2>
     <p class="sub">For teas beyond these seven. The vessel filters above switch between the short-steep and long-steep columns. The Basis column says where each row comes from.</p>
     <div class="scroll">
-      <table class="ptable">
+      <table class="ptable" data-cards data-title="0">
         <thead>
           <tr>
             <th rowspan="2">Type</th>
@@ -478,7 +531,7 @@ a:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
     <h2 id="gb-h">China's national tasting method</h2>
     <p class="sub">GB/T 23776-2018 sets how professional tasters brew tea to judge its quality. It uses boiling water for every type and, for most types, twice the flask's leaf, so it's deliberately strong and not a drinking recipe. It's useful for two things: how steep times compare across types, and how much longer pressed tea needs than loose.</p>
     <div class="scroll">
-      <table class="ptable">
+      <table class="ptable" data-cards data-title="1">
         <thead>
           <tr><th>Section</th><th>Tea</th><th>Leaf and water</th><th>Water</th><th>Steeps</th></tr>
         </thead>
@@ -594,6 +647,91 @@ a:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
   [vol,typ,met].forEach(function(el){el.addEventListener("input",calc);el.addEventListener("change",calc);});
   calc();
 })();
+
+/* mobile: rebuild each data-cards table as a stack of cards (one per row), so merged cells repeat per tea */
+(function(){
+  function grid(rows){
+    var m=[];
+    rows.forEach(function(tr,r){
+      m[r]=m[r]||[];
+      var c=0;
+      Array.prototype.forEach.call(tr.cells,function(td){
+        while(m[r][c])c++;
+        for(var i=0;i<(td.rowSpan||1);i++)for(var j=0;j<td.colSpan;j++)(m[r+i]=m[r+i]||[])[c+j]=td;
+        c+=td.colSpan;
+      });
+    });
+    return m;
+  }
+  function el(tag,cls,html){var e=document.createElement(tag);if(cls)e.className=cls;if(html!=null)e.innerHTML=html;return e;}
+  function vcls(node){return Array.prototype.filter.call(node.classList,function(c){return /^v-/.test(c);}).join(" ");}
+  function plain(node){return Array.prototype.filter.call(node.classList,function(c){return c==="num"||c==="basis"||c==="note";}).join(" ");}
+
+  document.querySelectorAll("table[data-cards]").forEach(function(t){
+    var head=grid([].slice.call(t.tHead.rows)),body=grid([].slice.call(t.tBodies[0].rows));
+    var tc=+t.dataset.title,gc=t.dataset.group!=null?+t.dataset.group:-1,n=head[0].length;
+    var cols=[];
+    for(var c=0;c<n;c++){
+      var top=head[0][c],sub=head[head.length-1][c];
+      cols.push({grp:top!==sub?top:null,label:sub.textContent.trim()});
+    }
+    var box=el("div","cards");
+    body.forEach(function(row,r){
+      if(gc>=0&&(r===0||row[gc]!==body[r-1][gc])){
+        var g=row[gc],h=el("h3","cgroup");
+        g.querySelectorAll(".v,.en").forEach(function(s,i){
+          var sp=el("span",s.classList.contains("v")?"zh":"",(i>1?"· ":"")+s.innerHTML);
+          if(s.lang)sp.lang=s.lang;
+          h.appendChild(sp);
+        });
+        box.appendChild(h);
+      }
+      var card=el("article","card");
+      card.appendChild(el("div","card-t",row[tc].innerHTML));
+      var sec=null,secGrp,dl;
+      for(var c=0;c<n;c++){
+        var cell=row[c];
+        if(c===tc||c===gc||!cell||(c>0&&cell===row[c-1]))continue;
+        var col=cols[c];
+        if(!sec||col.grp!==secGrp){
+          secGrp=col.grp;
+          if(col.grp){
+            sec=el("div","cg "+vcls(col.grp));
+            var name=col.grp.firstChild.textContent.trim(),small=col.grp.querySelector("small");
+            var h4=el("h4","",name);
+            if(small)h4.appendChild(el("small","",small.innerHTML));
+            sec.appendChild(h4);
+          }else sec=el("div","");
+          dl=el("dl",col.grp?"":"kv");
+          sec.appendChild(dl);
+          card.appendChild(sec);
+        }
+        /* in vessel groups each label/value pair is one tile; elsewhere dt/dd sit in two columns */
+        var pair=col.grp?el("div"):dl;
+        if(cell.colSpan<=1)pair.appendChild(el("dt","",col.label));
+        pair.appendChild(el("dd",plain(cell),cell.innerHTML));
+        if(cell.colSpan>1)pair.style.gridColumn="1/-1";
+        if(pair!==dl)dl.appendChild(pair);
+      }
+      box.appendChild(card);
+    });
+    var wrap=t.closest(".scroll");
+    wrap.parentNode.insertBefore(box,wrap.nextSibling);
+    wrap.classList.add("cardify");
+  });
+})();
+
+/* offline + install */
+if("serviceWorker" in navigator&&location.protocol!=="file:"){
+  addEventListener("load",function(){
+    navigator.serviceWorker.register("sw.js").then(function(){return navigator.serviceWorker.ready;}).then(function(reg){
+      /* hand the font files this page already loaded to the worker, so they work offline from the first visit */
+      var urls=performance.getEntriesByType("resource").map(function(e){return e.name;})
+        .filter(function(u){return /^https:\/\/fonts\.(googleapis|gstatic)\.com\//.test(u);});
+      if(urls.length&&reg.active)reg.active.postMessage({type:"cache-fonts",urls:urls});
+    }).catch(function(){});
+  });
+}
 </script>
 
 </body>
