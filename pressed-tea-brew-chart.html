@@ -1,0 +1,573 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Pressed Tea Brew Chart</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='31' fill='%232f6f68'/%3E%3Ccircle cx='32' cy='32' r='26' fill='none' stroke='%239fd0c8' stroke-width='3' stroke-dasharray='2.6 3.2'/%3E%3Ccircle cx='32' cy='32' r='19' fill='%23f3ead2'/%3E%3Cpath d='M32 17c9 6 10 17 0 30c-10-13-9-24 0-30z' fill='%232f6f68'/%3E%3Cpath d='M32 22v21' stroke='%23f3ead2' stroke-width='1.8' stroke-linecap='round'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@600;700&family=Public+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500&display=swap">
+<style>
+:root{
+  --bg:#f3f5f1;
+  --surface:#ffffff;
+  --ink:#1d2621;
+  --muted:#5b6a62;
+  --line:#dde3dd;
+  --line-strong:#b9c4bd;
+  --accent:#2f6f68;
+  --accent-ink:#ffffff;
+  --chip:#e9efeb;
+  --warn:#9a4a1f;
+  --box:#7a5a12;
+  --box-bg:#f6ecd2;
+  --c-moon:#e4ded0;
+  --c-peony:#3f8d97;
+  --c-jasmine:#8fae4a;
+  --c-lily:#b9cfb1;
+  --c-rose:#f0a19a;
+  --c-nuomi:#f1e3c6;
+  --c-bingdao:#c9463a;
+  --serif:"Noto Serif SC","Songti SC","SimSun",Georgia,serif;
+  --sans:"Public Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    color-scheme:dark;
+    --bg:#141a17; --surface:#1c2420; --ink:#e6ece8; --muted:#9aaba2;
+    --line:#2d3833; --line-strong:#435049; --accent:#7cc2b9; --accent-ink:#0f1a17;
+    --chip:#25302b; --warn:#f0b48c; --box:#e9c77a; --box-bg:#3a3020;
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --bg:#141a17; --surface:#1c2420; --ink:#e6ece8; --muted:#9aaba2;
+  --line:#2d3833; --line-strong:#435049; --accent:#7cc2b9; --accent-ink:#0f1a17;
+  --chip:#25302b; --warn:#f0b48c; --box:#e9c77a; --box-bg:#3a3020;
+}
+*{box-sizing:border-box}
+body{
+  background:var(--bg);color:var(--ink);font-family:var(--sans);
+  font-size:15px;line-height:1.5;padding-inline:16px;padding-block:24px 48px;
+}
+.wrap{max-width:1320px;margin:0 auto;display:flex;flex-direction:column;gap:32px}
+header{display:flex;flex-direction:column;gap:8px;max-width:72ch}
+h1{font-family:var(--serif);font-size:clamp(26px,5vw,36px);line-height:1.15;margin:0;text-wrap:balance}
+h2{font-size:18px;margin:0;text-wrap:balance}
+.sub{color:var(--muted);margin:0;max-width:75ch}
+section{display:flex;flex-direction:column;gap:12px}
+.label{font-size:11.5px;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);font-weight:600}
+
+/* filters */
+.filters{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.filters .label{margin-right:4px}
+.chip{
+  font:inherit;font-size:14px;font-weight:600;cursor:pointer;
+  border:1px solid var(--line-strong);background:var(--surface);color:var(--ink);
+  border-radius:999px;padding:6px 14px;display:inline-flex;gap:6px;align-items:center;
+}
+.chip::before{content:"";width:10px;height:10px;border-radius:50%;border:1.5px solid currentColor}
+.chip[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.chip[aria-pressed="true"]::before{background:currentColor}
+.chip:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+/* tables */
+.scroll{overflow-x:auto;border:1px solid var(--line);border-radius:12px;background:var(--surface)}
+table{border-collapse:collapse;width:100%;font-size:14px}
+th,td{padding:9px 11px;text-align:left;vertical-align:middle;border-bottom:1px solid var(--line);border-left:1px solid var(--line)}
+th:first-child,td:first-child{border-left:0}
+thead th{font-size:11.5px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);font-weight:600;background:var(--chip);white-space:nowrap}
+thead th.grp{text-align:center;color:var(--ink)}
+thead th.grp small{display:block;text-transform:none;letter-spacing:0;font-weight:500;color:var(--muted);font-size:12px}
+.vs{border-left:2px solid var(--line-strong)!important}
+tbody tr.gstart td,tbody tr.gstart th{border-top:2px solid var(--line-strong)}
+.num{font-family:var(--mono);font-variant-numeric:tabular-nums;white-space:nowrap}
+.num small{font-family:var(--sans);font-size:12px;color:var(--muted)}
+.cat{text-align:center;width:1%}
+.cat .v{writing-mode:vertical-rl;font-family:var(--serif);font-size:18px;font-weight:700;letter-spacing:.15em}
+.cat .en{display:block;white-space:nowrap;font-size:10.5px;color:var(--muted);font-weight:600;margin-top:4px;writing-mode:horizontal-tb}
+.tea{display:flex;gap:10px;align-items:center;min-width:190px}
+.dot{width:22px;height:22px;border-radius:50%;flex-shrink:0;background:var(--sw);box-shadow:inset 0 0 0 1px rgba(0,0,0,.18)}
+.tn{display:flex;flex-direction:column;line-height:1.3}
+.zh{font-family:var(--serif);font-weight:700;font-size:16px}
+.py{font-size:12.5px;color:var(--muted)}
+.tag{font-size:11.5px;font-weight:600;color:var(--accent)}
+.tag.warn{color:var(--warn)}
+.src{
+  display:inline-block;font-family:var(--sans);font-size:10px;font-weight:700;letter-spacing:.05em;
+  background:var(--box-bg);color:var(--box);border-radius:4px;padding:0 4px;margin-left:4px;vertical-align:2px;
+}
+.legend{font-size:13px;color:var(--muted);margin:0;max-width:95ch}
+
+/* vessel visibility */
+.v-flask,.v-gaiwan,.v-teapot,.v-short,.v-long{display:none}
+.show-flask .v-flask,.show-gaiwan .v-gaiwan,.show-teapot .v-teapot,.show-short .v-short,.show-flask .v-long{display:table-cell}
+
+/* routine */
+.routine{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,190px),1fr));gap:12px;list-style:none;margin:0;padding:0;counter-reset:r}
+.routine li{counter-increment:r;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:12px 14px;display:flex;gap:10px;align-items:flex-start;font-size:14px}
+.routine li::before{content:counter(r);font-family:var(--mono);font-size:13px;color:var(--accent);border:1px solid var(--accent);border-radius:50%;min-width:24px;height:24px;display:grid;place-items:center;flex-shrink:0}
+
+/* calculator */
+.calc{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:16px;display:flex;flex-direction:column;gap:14px}
+.calc-row{display:flex;flex-wrap:wrap;gap:12px 16px;align-items:flex-end}
+.field{display:flex;flex-direction:column;gap:4px}
+.field input,.field select{
+  font:inherit;font-size:15px;color:var(--ink);background:var(--bg);
+  border:1px solid var(--line-strong);border-radius:8px;padding:7px 10px;min-width:0;
+}
+.field input{width:7.5em;font-family:var(--mono)}
+.field input:focus-visible,.field select:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+.result{display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 14px}
+.result .g{font-family:var(--mono);font-size:30px;line-height:1.1;font-variant-numeric:tabular-nums}
+.result .why{font-size:13.5px;color:var(--muted);max-width:60ch}
+
+/* rules */
+.rules{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,320px),1fr));gap:16px 28px}
+.rules div{display:flex;flex-direction:column;gap:4px}
+.rules h3{font-size:15px;margin:0}
+.rules p{margin:0;font-size:14px;color:var(--muted);max-width:62ch}
+.ptable td{font-size:13.5px}
+.ptable td.nm{white-space:nowrap}
+.ptable td.note{min-width:200px}
+.basis{font-size:12px;color:var(--muted);min-width:140px}
+.sources{border-top:1px solid var(--line);padding-top:16px;font-size:13.5px;color:var(--muted);max-width:85ch;display:flex;flex-direction:column;gap:8px}
+.sources ul{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:4px}
+.sources p{margin:0}
+a{color:var(--accent)}
+a:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+</style>
+
+</head>
+<body>
+<div class="wrap" id="app">
+  <header>
+    <h1>Pressed Tea Brew Chart</h1>
+    <p class="sub">Seven pressed teas. Each column gives the first steep, how to lengthen later steeps, and how many steeps the leaf gives. Rows of the same tea type share merged settings.</p>
+  </header>
+
+  <div class="filters" role="group" aria-label="Show vessels">
+    <span class="label">Show</span>
+    <button class="chip" id="f-flask" data-v="flask" aria-pressed="true">500 ml flask</button>
+    <button class="chip" id="f-gaiwan" data-v="gaiwan" aria-pressed="false">Gaiwan 120 ml</button>
+    <button class="chip" id="f-teapot" data-v="teapot" aria-pressed="false">Teapot 250 ml</button>
+  </div>
+
+  <section>
+    <div class="scroll">
+      <table>
+        <thead>
+          <tr>
+            <th rowspan="2">Type</th>
+            <th rowspan="2">Tea</th>
+            <th rowspan="2">Water</th>
+            <th rowspan="2">Wash</th>
+            <th class="grp v-flask vs" colspan="4">500 ml flask<small>one piece, 5–6 g</small></th>
+            <th class="grp v-gaiwan vs" colspan="3">Gaiwan 120 ml<small>one piece, 5 g</small></th>
+            <th class="grp v-teapot vs" colspan="3">Teapot 250 ml<small>one piece, 5 g</small></th>
+          </tr>
+          <tr>
+            <th class="v-flask vs">1st</th><th class="v-flask">Later steeps</th><th class="v-flask">Brews</th><th class="v-flask">Caffeine, 1st</th>
+            <th class="v-gaiwan vs">1st</th><th class="v-gaiwan">Later steeps</th><th class="v-gaiwan">Steeps</th>
+            <th class="v-teapot vs">1st</th><th class="v-teapot">Later steeps</th><th class="v-teapot">Steeps</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- WHITE -->
+          <tr class="gstart">
+            <th class="cat" rowspan="3" scope="rowgroup"><span class="v" lang="zh">白茶</span><span class="en">White</span></th>
+            <td><div class="tea" style="--sw:var(--c-moon)"><span class="dot"></span><span class="tn"><span class="zh" lang="zh">月光白</span><span class="py">yuèguāng bái · Moonlight White bar</span></span></div></td>
+            <td class="num" rowspan="3">185°F <small>85°C</small><span class="src">BOX</span><br><small>up to 212°F if thin</small><span class="src">BOX</span></td>
+            <td class="num" rowspan="3">3 s<span class="src">BOX</span></td>
+            <td class="num v-flask vs" rowspan="2">4 min</td>
+            <td class="num v-flask" rowspan="3">+2 min</td>
+            <td class="num v-flask" rowspan="2">3</td>
+            <td class="num v-flask" rowspan="3">~30–60 <small>mg</small></td>
+            <td class="num v-gaiwan vs" rowspan="3">10 s<span class="src">BOX</span></td>
+            <td class="num v-gaiwan" rowspan="3">+5 s</td>
+            <td class="num v-gaiwan">10<span class="src">BOX</span></td>
+            <td class="num v-teapot vs" rowspan="3">15 s<span class="src">BOX</span></td>
+            <td class="num v-teapot" rowspan="3">+10 s</td>
+            <td class="num v-teapot" rowspan="2">6–8</td>
+          </tr>
+          <tr>
+            <td><div class="tea" style="--sw:var(--c-peony)"><span class="dot"></span><span class="tn"><span class="zh" lang="zh">白牡丹</span><span class="py">bái mǔdān · White Peony</span></span></div></td>
+            <td class="num v-gaiwan">8–10</td>
+          </tr>
+          <tr>
+            <td><div class="tea" style="--sw:var(--c-jasmine)"><span class="dot"></span><span class="tn"><span class="zh" lang="zh">茉莉白茶</span><span class="py">mòlì bái chá · Jasmine white</span><span class="tag">Scent fades after 2 brews</span></span></div></td>
+            <td class="num v-flask vs">3 min</td>
+            <td class="num v-flask">2</td>
+            <td class="num v-gaiwan">5</td>
+            <td class="num v-teapot">4</td>
+          </tr>
+
+          <!-- BLACK -->
+          <tr class="gstart">
+            <th class="cat" rowspan="2" scope="rowgroup"><span class="v" lang="zh">红茶</span><span class="en">Black</span></th>
+            <td><div class="tea" style="--sw:var(--c-lily)"><span class="dot"></span><span class="tn"><span class="zh" lang="zh">百合红茶</span><span class="py">bǎihé hóngchá · Lily black</span><span class="tag warn">Always strain</span></span></div></td>
+            <td class="num" rowspan="2">203°F <small>95°C</small><br><small>up to 212°F if thin</small></td>
+            <td class="num" rowspan="2">3 s</td>
+            <td class="num v-flask vs" rowspan="2">3 min</td>
+            <td class="num v-flask" rowspan="2">+2 min</td>
+            <td class="num v-flask" rowspan="2">2</td>
+            <td class="num v-flask" rowspan="2">~45–55 <small>mg</small></td>
+            <td class="num v-gaiwan vs" rowspan="2">10 s</td>
+            <td class="num v-gaiwan" rowspan="2">+5 s</td>
+            <td class="num v-gaiwan" rowspan="2">5–6</td>
+            <td class="num v-teapot vs" rowspan="2">15 s</td>
+            <td class="num v-teapot" rowspan="2">+10 s</td>
+            <td class="num v-teapot" rowspan="2">4–5</td>
+          </tr>
+          <tr>
+            <td><div class="tea" style="--sw:var(--c-rose)"><span class="dot"></span><span class="tn"><span class="zh" lang="zh">甜蜜蜜 玫瑰红茶</span><span class="py">tiánmìmì méiguī hóngchá · Rose black</span><span class="tag warn">Always strain</span></span></div></td>
+          </tr>
+
+          <!-- PU-ERH -->
+          <tr class="gstart">
+            <th class="cat" rowspan="3" scope="rowgroup"><span class="v" lang="zh">普洱</span><span class="en">Pu-erh</span></th>
+            <td><div class="tea" style="--sw:var(--c-nuomi)"><span class="dot"></span><span class="tn"><span class="zh" lang="zh">糯米香 熟茶</span><span class="py">nuòmǐ xiāng shú chá · Sticky-rice ripe</span><span class="tag">Leaves can stay in</span></span></div></td>
+            <td class="num" rowspan="3">212°F <small>100°C</small></td>
+            <td class="num" rowspan="3">10 s</td>
+            <td class="num v-flask vs" rowspan="2">4 min</td>
+            <td class="num v-flask" rowspan="2">+2 min,<br>then +3 min</td>
+            <td class="num v-flask" rowspan="2">4</td>
+            <td class="num v-flask" rowspan="2">~60–70 <small>mg</small></td>
+            <td class="num v-gaiwan vs" rowspan="3">10 s</td>
+            <td class="num v-gaiwan" rowspan="2">+5 s</td>
+            <td class="num v-gaiwan" rowspan="2">8–10</td>
+            <td class="num v-teapot vs" rowspan="2">20 s</td>
+            <td class="num v-teapot" rowspan="3">+10 s</td>
+            <td class="num v-teapot" rowspan="3">6–8</td>
+          </tr>
+          <tr>
+            <td><div class="tea" style="--sw:var(--c-bingdao)"><span class="dot"></span><span class="tn"><span class="zh" lang="zh">冰岛 · if ripe</span><span class="py">Bīngdǎo · dark brown leaves</span></span></div></td>
+          </tr>
+          <tr>
+            <td><div class="tea" style="--sw:var(--c-bingdao)"><span class="dot"></span><span class="tn"><span class="zh" lang="zh">冰岛 · if raw</span><span class="py">Bīngdǎo · olive-green leaves</span><span class="tag warn">Always strain</span></span></div></td>
+            <td class="num v-flask vs">2 min</td>
+            <td class="num v-flask">+1 min,<br>then +2 min</td>
+            <td class="num v-flask">3</td>
+            <td class="num v-flask">~45–55 <small>mg</small></td>
+            <td class="num v-gaiwan">5 s ×3, 20 s ×3,<br>40 s ×2, then 60 s</td>
+            <td class="num v-gaiwan">~10</td>
+            <td class="num v-teapot vs">15 s</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="legend"><span class="src">BOX</span> is from the Jesse's Teahouse 月光白 (yuèguāng bái) box. Where a BOX value sits in a merged cell, it applies to the whole white group. Everything else comes from the sources below or is general practice. Caffeine is for 5 g in 500 ml, first brew only; a 6 g piece gives about a fifth more. The box also uses one 5 g piece in a 250 ml teapot. That's lighter than the gongfu ratios below. For a stronger pot, I'd weigh out 8–12 g and shorten each steep; that's my suggestion, not a source.</p>
+  </section>
+
+  <section class="v-flask" style="display:none" id="routine-sec">
+    <h2>Two-flask routine</h2>
+    <ol class="routine">
+      <li><div><strong>Brew in the titanium flask.</strong> Wash, then steep for the 1st time on the chart.</div></li>
+      <li><div><strong>Pour through the strainer</strong> into the second 500 ml flask. It holds finished tea that won't go bitter.</div></li>
+      <li><div><strong>Drink from the second flask</strong> by the cup. Expect about 450 ml; the leaves keep some back.</div></li>
+      <li><div><strong>Refill the titanium flask at break</strong> if you have hot water there. Use the "Later steeps" time, plus a minute if the water is cooler than the chart.</div></li>
+      <li><div><strong>Leftover wet leaves:</strong> fridge in a covered cup, use within 24 hours, wash again before steeping. Worth it mainly for pu-erh.</div></li>
+    </ol>
+  </section>
+
+  <section aria-labelledby="calc-h">
+    <h2 id="calc-h">How much leaf</h2>
+    <p class="sub">Weigh the leaf against the water, not the vessel. For flask or mug steeps of several minutes, use 1 g per 100 ml for every tea type, so 5 g in the 500 ml flask. Short gaiwan steeps use 2–5 times more leaf, depending on type. Enter any vessel size below.</p>
+    <div class="calc">
+      <div class="calc-row">
+        <div class="field"><label class="label" for="c-vol">Water, ml</label><input id="c-vol" type="number" inputmode="numeric" min="30" max="3000" step="10" value="500"></div>
+        <div class="field"><label class="label" for="c-type">Tea type</label>
+          <select id="c-type">
+            <option value="green">Green / yellow</option>
+            <option value="white">White, fresh or pressed</option>
+            <option value="aged">White, aged</option>
+            <option value="oolong">Oolong</option>
+            <option value="black">Black</option>
+            <option value="raw">Raw pu-erh</option>
+            <option value="ripe">Ripe pu-erh</option>
+            <option value="dark">Other dark tea, simmered</option>
+          </select>
+        </div>
+        <div class="field"><label class="label" for="c-method">Steeping</label>
+          <select id="c-method">
+            <option value="long">Long, minutes (flask, mug)</option>
+            <option value="short">Short, seconds (gaiwan, small pot)</option>
+          </select>
+        </div>
+      </div>
+      <div class="result" aria-live="polite">
+        <span class="g" id="c-out">5 g</span>
+        <span class="why" id="c-why"></span>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Principles by tea type</h2>
+    <p class="sub">For teas beyond these seven. The vessel filters above switch between the short-steep and long-steep columns. The Basis column says where each row comes from.</p>
+    <div class="scroll">
+      <table class="ptable">
+        <thead>
+          <tr>
+            <th rowspan="2">Type</th>
+            <th rowspan="2">Water</th>
+            <th rowspan="2">Wash</th>
+            <th class="grp v-short vs" colspan="4">Short steeps<small>gaiwan, small teapot</small></th>
+            <th class="grp v-long vs" colspan="4">Long steeps<small>flask, mug</small></th>
+            <th rowspan="2">Notes</th>
+            <th rowspan="2">Basis</th>
+          </tr>
+          <tr>
+            <th class="v-short vs">Leaf per 100 ml</th><th class="v-short">1st</th><th class="v-short">Later steeps</th><th class="v-short">Steeps</th>
+            <th class="v-long vs">Leaf per 100 ml</th><th class="v-long">1st</th><th class="v-long">Later steeps</th><th class="v-long">Brews</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="nm"><span class="zh" lang="zh">绿茶 · 黄茶</span><br><span class="py">lǜchá · huángchá</span><br>Green · Yellow</td>
+            <td class="num">176–194°F<br><small>80–90°C</small></td>
+            <td>No</td>
+            <td class="num v-short vs">2 g</td>
+            <td class="num v-short">15 s</td>
+            <td class="num v-short">+5–10 s</td>
+            <td class="num v-short">~4</td>
+            <td class="num v-long vs" rowspan="7">1 g<br><small>all types</small></td>
+            <td class="num v-long">2–3 min</td>
+            <td class="num v-long">+1 min</td>
+            <td class="num v-long">2</td>
+            <td class="note">The most delicate types. Yellow tea is brewed the same as green.</td>
+            <td class="basis">Chayu guide (90°C start, 1:50, 15-20-30-40 s). Cooler range and long steeps: general practice. GB/T 23776 tastes green 4 min, yellow 5 min.</td>
+          </tr>
+          <tr>
+            <td class="nm"><span class="zh" lang="zh">白茶</span> <span class="py">báichá</span><br>White, fresh or pressed</td>
+            <td class="num">185–203°F<br><small>85–95°C</small></td>
+            <td>Pressed: 3 s</td>
+            <td class="num v-short vs">2–4 g</td>
+            <td class="num v-short">10 s</td>
+            <td class="num v-short">10 s ×3,<br>then +10 s</td>
+            <td class="num v-short">5–10</td>
+            <td class="num v-long">4–5 min</td>
+            <td class="num v-long">+2 min</td>
+            <td class="num v-long">3</td>
+            <td class="note">Forgiving. If thin, steep longer or go hotter.</td>
+            <td class="basis">Jesse's box (85°C, 5 g/120 ml, 10 s, 10 steeps); Chayu guide (95°C, 1:50, 10-10-10-20-30 s). GB/T 23776: 5 min at 1:50 for tasting.</td>
+          </tr>
+          <tr>
+            <td class="nm"><span class="zh" lang="zh">老白茶</span> <span class="py">lǎo báichá</span><br>White, aged</td>
+            <td class="num">203–212°F<br><small>95–100°C</small></td>
+            <td>Yes, then rest 5–10 min</td>
+            <td class="num v-short vs">3.5–5.5 g</td>
+            <td class="num v-short">15–20 s</td>
+            <td class="num v-short">+10–30 s</td>
+            <td class="num v-short">6–9</td>
+            <td class="num v-long">4–5 min</td>
+            <td class="num v-long">+2 min</td>
+            <td class="num v-long">3</td>
+            <td class="note">Older, darker leaf takes boiling water.</td>
+            <td class="basis">T/MCYX 012-2024 (1:18–1:28, 95–100°C). Long steeps: general practice.</td>
+          </tr>
+          <tr>
+            <td class="nm"><span class="zh" lang="zh">乌龙茶</span> <span class="py">wūlóngchá</span><br>Oolong</td>
+            <td class="num">212°F<br><small>100°C</small></td>
+            <td>Rolled balls: 10 s</td>
+            <td class="num v-short vs">3.3 g</td>
+            <td class="num v-short">5 s</td>
+            <td class="num v-short">10 s ×3,<br>then 20 s ×3</td>
+            <td class="num v-short">~7</td>
+            <td class="num v-long">3–4 min</td>
+            <td class="num v-long">+1–2 min</td>
+            <td class="num v-long">2–3</td>
+            <td class="note">Rolled balls need the wash to open.</td>
+            <td class="basis">Chayu guide (100°C, 1:30). GB/T 23776 gaiwan method: 5 g/110 ml, 2-3-5 min, foam skimmed. Long steeps: general practice.</td>
+          </tr>
+          <tr>
+            <td class="nm"><span class="zh" lang="zh">红茶</span> <span class="py">hóngchá</span><br>Black</td>
+            <td class="num">203–212°F<br><small>95–100°C</small></td>
+            <td>Loose: none, skim foam off the 1st</td>
+            <td class="num v-short vs">3.3–5 g</td>
+            <td class="num v-short">~10 s</td>
+            <td class="num v-short">10 s ×4, then<br>lengthen toward 45 s</td>
+            <td class="num v-short">5–6</td>
+            <td class="num v-long">3–4 min</td>
+            <td class="num v-long">+2 min</td>
+            <td class="num v-long">2</td>
+            <td class="note">Turns bitter if the leaves sit. Always strain.</td>
+            <td class="basis">T/CSTEA 00050-2022 (boiling, 1:20, 4–45 s, 5–6 steeps, foam skimmed); Chayu guide (95°C, 1:30). GB/T 23776 tastes black 5 min. Long steeps: general practice.</td>
+          </tr>
+          <tr>
+            <td class="nm"><span class="zh" lang="zh">生普</span> <span class="py">shēng pǔ</span><br>Raw pu-erh</td>
+            <td class="num">212°F<br><small>100°C</small></td>
+            <td>10 s</td>
+            <td class="num v-short vs">~5 g</td>
+            <td class="num v-short">10 s</td>
+            <td class="num v-short">5 s ×3, 20 s ×3,<br>40 s ×2, then 60 s</td>
+            <td class="num v-short">~10</td>
+            <td class="num v-long">2–3 min</td>
+            <td class="num v-long">+1–2 min</td>
+            <td class="num v-long">3</td>
+            <td class="note">Young raw is the harshest if over-steeped. Old pu-erh can give 10–30 steeps.</td>
+            <td class="basis">Chayu guide (100°C, compressed-sheng times). GB/T 23776 compressed tea: 2–5 min then 5–8 min. Leaf amount and long steeps: general practice.</td>
+          </tr>
+          <tr>
+            <td class="nm"><span class="zh" lang="zh">熟普</span> <span class="py">shú pǔ</span><br>Ripe pu-erh</td>
+            <td class="num">212°F<br><small>100°C</small></td>
+            <td>10 s</td>
+            <td class="num v-short vs">~5 g</td>
+            <td class="num v-short">10 s</td>
+            <td class="num v-short">+5 s</td>
+            <td class="num v-short">8–10+</td>
+            <td class="num v-long">4–5 min</td>
+            <td class="num v-long">+2–3 min</td>
+            <td class="num v-long">3–4</td>
+            <td class="note">The most forgiving tea, and the only one safe to leave the leaves in.</td>
+            <td class="basis">General practice. GB/T 23776 compressed tea: 2–5 min then 5–8 min.</td>
+          </tr>
+          <tr>
+            <td class="nm"><span class="zh" lang="zh">黑茶</span> <span class="py">hēichá</span><br>Other dark tea</td>
+            <td class="num">Simmer</td>
+            <td>Yes</td>
+            <td class="num v-short vs" colspan="4">Not usually short-steeped; simmer it</td>
+            <td class="num v-long vs">1–1.25 g</td>
+            <td class="num v-long">up to 3 min</td>
+            <td class="num v-long">same</td>
+            <td class="num v-long">~3</td>
+            <td class="note">Bricks like Fu tea are often simmered in a pot.</td>
+            <td class="basis">Chayu guide (simmer, 1:80–1:100, up to 3 min, about 3 times). GB/T 23776 loose dark tea: 2 min then 5 min. Wash: general practice.</td>
+          </tr>
+          <tr>
+            <td class="nm"><span class="zh" lang="zh">花茶</span> <span class="py">huāchá</span><br>Scented</td>
+            <td colspan="2">Follow the base tea</td>
+            <td class="v-short vs" colspan="4">Base tea's values, fewer steeps</td>
+            <td class="v-long vs" colspan="4">Base tea's values, 1–2 brews</td>
+            <td class="note">Jasmine white, rose black and so on. The scent goes mostly into the first brews.</td>
+            <td class="basis">GB/T 23776 scented tea: flowers removed, 3 g/150 ml, 3 min then 5 min. Fewer steeps: general practice.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section aria-labelledby="gb-h">
+    <h2 id="gb-h">China's national tasting method</h2>
+    <p class="sub">GB/T 23776-2018 sets how professional tasters brew tea to judge its quality. It uses boiling water and twice the flask's leaf for every type, so it's deliberately strong and not a drinking recipe. It's useful for two things: how steep times compare across types, and how much longer pressed tea needs than loose.</p>
+    <div class="scroll">
+      <table class="ptable">
+        <thead>
+          <tr><th>Section</th><th>Tea</th><th>Leaf and water</th><th>Water</th><th>Steeps</th></tr>
+        </thead>
+        <tbody>
+          <tr><td class="num" rowspan="3">5.3.2.1</td><td>Green</td><td class="num" rowspan="3">3 or 5 g at 1:50<br><small>1 g per 50 ml</small></td><td class="num" rowspan="8">Boiling</td><td class="num">4 min</td></tr>
+          <tr><td>Black, white, yellow, strip or curled oolong</td><td class="num">5 min</td></tr>
+          <tr><td>Rolled or ball oolong</td><td class="num">6 min</td></tr>
+          <tr><td class="num">5.3.2.2</td><td>Oolong, gaiwan method</td><td class="num">5 g in 110 ml</td><td class="num">2 · 3 · 5 min<br><small>foam skimmed off the 1st</small></td></tr>
+          <tr><td class="num">5.3.2.3</td><td>Dark tea, loose</td><td class="num" rowspan="2">3 or 5 g at 1:50</td><td class="num">2 · 5 min</td></tr>
+          <tr><td class="num">5.3.2.4</td><td>Compressed tea (bricks, cakes)</td><td class="num">2–5 · 5–8 min<br><small>longer the tighter it's pressed</small></td></tr>
+          <tr><td class="num">5.3.2.5</td><td>Scented tea, flowers picked out</td><td class="num">3 g in 150 ml</td><td class="num">3 · 5 min</td></tr>
+          <tr><td class="num">5.3.2.6</td><td>Tea bag</td><td class="num">1 bag in 150 ml</td><td class="num">5 min</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="legend">Takeaways for your flask: pressed tea gets a first steep up to 2.5 times longer than loose tea, and its second steep is about 3 min longer than its first. The standard has no separate pu-erh row; I'm reading pressed pu-erh as compressed tea. Tasters judge flavour at about 50°C (5.3.3.3).</p>
+  </section>
+
+  <section>
+    <h2>Rules that hold across types</h2>
+    <div class="rules">
+      <div>
+        <h3>Heat follows processing</h3>
+        <p>Tender, unoxidized leaf (green, yellow, fresh white) wants cooler water. Oxidized, fermented, aged or tightly pressed leaf (black, oolong, pu-erh, aged white) takes water at or near a boil.</p>
+      </div>
+      <div>
+        <h3>Leaf and time trade off</h3>
+        <p>More leaf means shorter steeps. For short steeps the sources run from 1 g per 50 ml (green, fresh white) to 1 g per 18–30 ml (aged white, oolong, black). The national tasting method uses 1 g per 50 ml for 4–6 min, which is strong on purpose. 10 g in the flask would be 1 g per 50 ml; I'd expect it to need roughly half the chart times, but that's my inference. Taste the first brew and adjust.</p>
+      </div>
+      <div>
+        <h3>How to lengthen steeps</h3>
+        <p>Short steeps: add 5 s while the tea is still strong, then jump by 10–30 s once it thins. Dense or aged tea takes the bigger jumps. Long steeps: add 1–2 min per brew, and 2–3 min late in a ripe pu-erh session.</p>
+      </div>
+      <div>
+        <h3>Wash pressed tea</h3>
+        <p>A 3–10 s wash opens a pressed piece and rinses dust. Pressed white and black get 3 s; pu-erh gets about 10 s. Aged white gets a wash and then rests 5–10 min. Loose green and loose black skip it.</p>
+      </div>
+      <div>
+        <h3>Fix thin or bitter tea</h3>
+        <p>Thin: steep longer or go hotter, as the Jesse's box says. Bitter or drying: go about 10°F cooler or shorter.</p>
+      </div>
+      <div>
+        <h3>Caffeine rises with time and heat</h3>
+        <p>Longer, hotter steeps extract more caffeine. In one study of three 2-min green tea brews, the second brew had the most caffeine; earlier studies with longer steeps found each brew carried less than the one before.</p>
+      </div>
+    </div>
+  </section>
+
+  <footer class="sources">
+    <h2 style="font-size:15px">Sources</h2>
+    <ul>
+      <li>Read in full: <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC12248710/">Ayakdaş &amp; Ağagündüz, <i>Foods</i> 2025</a>. Caffeine by tea type, time and temperature at 2 g per 200 ml, the same 1 g per 100 ml as the flask. Flask caffeine figures are their per-200 ml values ×2.5, estimated for the chart's times.</li>
+      <li>Read via extracted summary: <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC13147319/">Zhang et al., <i>J. Food Sci.</i> 2026</a>, three successive green tea infusions, 4 g in 100 ml at 85°C for 2 min each.</li>
+      <li>Read via extracted summary: <a href="https://www.ttbz.org.cn/Home/PdfFileStreamGet/c3QsMTA4NDgw">T/MCYX 012-2024</a>, an aged white tea brewing guide, and <a href="https://www.ttbz.org.cn/Home/PdfFileStreamGet/c3QsNjgwMzM(eq)">T/CSTEA 00050-2022</a>, Guangze black tea brewing. Both are Chinese group standards.</li>
+      <li>Secondary: <a href="https://www.jiemian.com/article/1041035.html">Jiemian News, six-category brewing guide</a>, reprinted from the tea site Chayu. Cited as "Chayu guide."</li>
+      <li>Read directly (sections 4–6, from page scans): <a href="https://down.foodmate.net/standard/sort/3/52614.html">GB/T 23776-2018, 茶叶感官审评方法</a> (Cháyè gǎnguān shěnpíng fāngfǎ, "Methodology for sensory evaluation of tea"), China's national tea tasting standard. The scanned copy is hosted by Foodmate (食品伙伴网, Shípǐn huǒbàn wǎng), a food-standards library. The listing is on the <a href="https://openstd.samr.gov.cn/bzgk/std/newGbInfo?hcno=DE887190872380558CCAF17BE9D850E8">official standards portal</a>.</li>
+      <li>Your Jesse's Teahouse 月光白 box (photo).</li>
+    </ul>
+    <p>Not read: GB/T 22111, the pu-erh product standard. Anything marked "general practice," all teapot times, and the long-steep times are my own synthesis, not from a source. The 1 g per 100 ml long-steep ratio is the caffeine study's ratio, which I've applied to every type.</p>
+  </footer>
+</div>
+
+<script>
+(function(){
+  var KEY="pressed-tea-vessels";
+  var state={flask:true,gaiwan:false,teapot:false};
+  try{var s=JSON.parse(localStorage.getItem(KEY)||"null");if(s&&typeof s==="object"){state.flask=!!s.flask;state.gaiwan=!!s.gaiwan;state.teapot=!!s.teapot;}}catch(e){}
+  var app=document.getElementById("app");
+  var routine=document.getElementById("routine-sec");
+  function apply(){
+    app.classList.toggle("show-flask",state.flask);
+    app.classList.toggle("show-gaiwan",state.gaiwan);
+    app.classList.toggle("show-teapot",state.teapot);
+    app.classList.toggle("show-short",state.gaiwan||state.teapot);
+    routine.style.display=state.flask?"flex":"none";
+    document.querySelectorAll(".chip").forEach(function(b){b.setAttribute("aria-pressed",String(!!state[b.dataset.v]));});
+  }
+  document.querySelectorAll(".chip").forEach(function(b){
+    b.addEventListener("click",function(){
+      state[b.dataset.v]=!state[b.dataset.v];
+      try{localStorage.setItem(KEY,JSON.stringify(state));}catch(e){}
+      apply();
+    });
+  });
+  apply();
+
+  /* leaf calculator: grams per 100 ml [min,max] */
+  var R={
+    green:{short:[2,2],long:[1,1],why:{short:"1 g per 50 ml (Chayu guide).",long:"1 g per 100 ml."}},
+    white:{short:[2,4.2],long:[1,1],why:{short:"1 g per 50 ml (Chayu guide) up to 5 g per 120 ml (Jesse's box).",long:"1 g per 100 ml."}},
+    aged:{short:[3.6,5.6],long:[1,1],why:{short:"1 g per 18–28 ml (T/MCYX 012-2024).",long:"1 g per 100 ml."}},
+    oolong:{short:[3.3,3.3],long:[1,1],why:{short:"1 g per 30 ml (Chayu guide).",long:"1 g per 100 ml."}},
+    black:{short:[3.3,5],long:[1,1],why:{short:"1 g per 20–30 ml (T/CSTEA 00050-2022; Chayu guide).",long:"1 g per 100 ml."}},
+    raw:{short:[5,5],long:[1,1],why:{short:"About 1 g per 20 ml (general practice).",long:"1 g per 100 ml."}},
+    ripe:{short:[5,5],long:[1,1],why:{short:"About 1 g per 20 ml (general practice).",long:"1 g per 100 ml."}},
+    dark:{short:[1,1.25],long:[1,1.25],why:{short:"Simmered at 1 g per 80–100 ml (Chayu guide).",long:"Simmered at 1 g per 80–100 ml (Chayu guide)."}}
+  };
+  var vol=document.getElementById("c-vol"),typ=document.getElementById("c-type"),met=document.getElementById("c-method");
+  var out=document.getElementById("c-out"),why=document.getElementById("c-why");
+  function r5(x){return Math.round(x*2)/2;}
+  function fmt(x){return (x%1===0?x.toFixed(0):x.toFixed(1));}
+  function calc(){
+    var v=parseFloat(vol.value);
+    if(!(v>0)){out.textContent="–";why.textContent="Enter the water volume in ml.";return;}
+    var d=R[typ.value],m=met.value,a=d[m];
+    var lo=r5(a[0]*v/100),hi=r5(a[1]*v/100);
+    if(lo<0.5)lo=0.5; if(hi<0.5)hi=0.5;
+    out.textContent=(lo===hi?fmt(lo):fmt(lo)+"–"+fmt(hi))+" g";
+    why.textContent="For "+fmt(v)+" ml: "+d.why[m];
+  }
+  [vol,typ,met].forEach(function(el){el.addEventListener("input",calc);el.addEventListener("change",calc);});
+  calc();
+})();
+</script>
+
+</body>
+</html>
