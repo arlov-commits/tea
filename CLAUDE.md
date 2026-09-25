@@ -22,10 +22,20 @@ a fact can be looked up, look it up before writing it, in chat as well as on
 the page. If no source gives a value, write "Not in sources" rather than
 filling the cell.
 
+When sources disagree, don't pick by feel. `AUDIT.md` holds the two fixed
+rules (the tea's own package, then a source for that tea, then a type-level
+source at the closest leaf-to-water ratio, never one more than 1.5× off) and
+a ledger of every value with the quote behind it. Change a value only when a
+quote changes or a better-ranked source turns up, and update the ledger in the
+same commit.
+
 ## What the project is
 
 - `index.html` is the whole app: markup, CSS and vanilla ES5 in one file, no
   build step. Three tabs: Pressed, Loose leaf, Guide.
+- Every `table[data-pick]` lets a row be highlighted and un-highlighted by
+  pressing it; marks persist per table in localStorage, keyed by the row's
+  title cell text.
 - The tables are the data. On phones (≤720px) each `table[data-cards]` is
   rebuilt as cards by script, so edit the table, never the cards.
 - It is an installable PWA. `manifest.webmanifest` and `sw.js` ship with it; a
@@ -44,8 +54,10 @@ Same construction as the Bodhi Precepts and Academic Planner apps:
   viewport, which Android Chrome keeps at the taller URL-bar-hidden height.
 - `.frame` needs `min-height:0`, or the column overflows and pushes the bar
   off screen.
-- One set of tabs is drawn twice: a bottom bar on phones, a side rail from
-  820px up. The media query alone decides which shows.
+- One set of tabs is drawn twice: a bottom bar on phones, and from 820px up a
+  menu bar across the top, like an ordinary website. The top bar is the
+  column's first child, also in flow, so it stays put while the pane scrolls.
+  The media query alone decides which shows.
 
 ## Verify before committing
 
