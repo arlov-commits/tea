@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Pressed Tea Brew Chart</title>
-<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='31' fill='%232f6f68'/%3E%3Ccircle cx='32' cy='32' r='26' fill='none' stroke='%239fd0c8' stroke-width='3' stroke-dasharray='2.6 3.2'/%3E%3Ccircle cx='32' cy='32' r='19' fill='%23f3ead2'/%3E%3Cpath d='M32 17c9 6 10 17 0 30c-10-13-9-24 0-30z' fill='%232f6f68'/%3E%3Cpath d='M32 22v21' stroke='%23f3ead2' stroke-width='1.8' stroke-linecap='round'/%3E%3C/svg%3E">
+<link rel="icon" type="image/svg+xml" href="icons/icon.svg">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
 <meta name="theme-color" content="#2f6f68">
@@ -69,7 +69,7 @@ section{display:flex;flex-direction:column;gap:12px}
 .label{font-size:11.5px;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);font-weight:600}
 
 /* filters */
-.filters,.fsub{display:flex;flex-wrap:wrap;gap:10px 28px;align-items:center}
+.filters{display:flex;flex-wrap:wrap;gap:10px 28px;align-items:center}
 .fgroup{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
 .fgroup[hidden]{display:none}
 .filters .label{margin-right:4px}
@@ -79,8 +79,8 @@ section{display:flex;flex-direction:column;gap:12px}
   border-radius:999px;padding:6px 14px;display:inline-flex;gap:6px;align-items:center;
 }
 .chip::before{content:"";width:10px;height:10px;border-radius:50%;border:1.5px solid currentColor}
-.chip[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
-.chip[aria-pressed="true"]::before{background:currentColor}
+.chip[aria-checked="true"]{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.chip[aria-checked="true"]::before{background:currentColor}
 .chip:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 
 /* tables */
@@ -178,9 +178,7 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
     padding-top:max(8px,env(safe-area-inset-top));
     flex-direction:column;align-items:stretch;flex-wrap:nowrap;gap:6px;
   }
-  .fsub{gap:6px 18px}
   .fgroup{gap:6px}
-  .filters .hide-narrow{display:none}
   .filters .label{font-size:10.5px;white-space:nowrap}
   .chip{min-height:38px;padding:7px 13px;font-size:13.5px;white-space:nowrap;flex-shrink:0}
   .chip::before{display:none}
@@ -212,8 +210,7 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
 }
 @media (max-width:380px){
   .chip{min-height:36px;padding:6px 10px;font-size:12.5px}
-  .fgroup,.fsub{gap:5px}
-  .fsub{column-gap:14px}
+  .fgroup{gap:5px}
 }
 </style>
 
@@ -226,23 +223,21 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
   </header>
 
   <div class="filters">
-    <div class="fgroup" role="group" aria-label="Mode">
+    <div class="fgroup" role="radiogroup" aria-label="Mode">
       <span class="label">Mode</span>
-      <button class="chip" data-k="long" aria-pressed="true">Long steeps</button>
-      <button class="chip" data-k="gongfu" aria-pressed="false">Gongfu</button>
+      <button class="chip" role="radio" data-set="mode" data-val="long" aria-checked="true">Long steeps</button>
+      <button class="chip" role="radio" data-set="mode" data-val="gongfu" aria-checked="false">Gongfu</button>
     </div>
-    <div class="fsub">
-      <div class="fgroup" data-for="long" role="group" aria-label="Leaf in the 500 ml flask">
-        <span class="label">500 ml flask</span>
-        <button class="chip" data-leaf="5" aria-pressed="true">5 g</button>
-        <button class="chip" data-leaf="7.5" aria-pressed="false">7.5 g</button>
-        <button class="chip" data-leaf="10" aria-pressed="false">10 g</button>
-      </div>
-      <div class="fgroup" data-for="gongfu" role="group" aria-label="Gongfu vessels" hidden>
-        <span class="label hide-narrow">Gongfu vessel</span>
-        <button class="chip" data-k="gaiwan" aria-pressed="true">Gaiwan 120 ml</button>
-        <button class="chip" data-k="teapot" aria-pressed="true">Teapot 250 ml</button>
-      </div>
+    <div class="fgroup" data-for="long" role="radiogroup" aria-label="Leaf in the 500 ml flask">
+      <span class="label">500 ml flask</span>
+      <button class="chip" role="radio" data-set="leaf" data-val="5" aria-checked="true">5 g</button>
+      <button class="chip" role="radio" data-set="leaf" data-val="7.5" aria-checked="false">7.5 g</button>
+      <button class="chip" role="radio" data-set="leaf" data-val="10" aria-checked="false">10 g</button>
+    </div>
+    <div class="fgroup" data-for="gongfu" role="radiogroup" aria-label="Vessel" hidden>
+      <span class="label">Vessel</span>
+      <button class="chip" role="radio" data-set="vessel" data-val="gaiwan" aria-checked="true">Gaiwan 120 ml</button>
+      <button class="chip" role="radio" data-set="vessel" data-val="teapot" aria-checked="false">Teapot 250 ml</button>
     </div>
   </div>
 
@@ -369,19 +364,19 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
     <p class="sub">The leaf-to-water ratio sets the steep time, not the vessel. A lot of leaf for the water means steeps of seconds; a little means minutes. The same 5 g piece is about 1 g per 24 ml in the 120 ml gaiwan and 1 g per 100 ml in the 500 ml flask. For long steeps I use 1–2 g per 100 ml for every type: 1 g, the caffeine study's ratio rather than a brewing source's rule, for the longest and most economical steeps, and up to 2 g for shorter ones. More than that crowds the vessel (see Brewing by feel), so the calculator shows 5–10 g for every tea at 500 ml. Short steeps use about 2–5 times more leaf, and the amount does depend on type.</p>
     <div class="scroll">
       <table class="ptable">
-        <thead><tr><th></th><th>500 ml flask, long steeps</th><th>120 ml gaiwan, short steeps</th></tr></thead>
+        <thead><tr><th></th><th class="v-long">500 ml flask, long steeps</th><th class="v-short">Gaiwan or small teapot, gongfu</th></tr></thead>
         <tbody>
-          <tr><td>Leaf per 100 ml</td><td class="num">1 g</td><td class="num">about 4 g</td></tr>
-          <tr><td>Each steep</td><td>Minutes</td><td>Seconds</td></tr>
-          <tr><td>Brews from one 5 g piece</td><td class="num">2–4</td><td class="num">5–10</td></tr>
-          <tr><td>Tea from one 5 g piece</td><td class="num">about 1–2 L</td><td class="num">about 0.5–1 L</td></tr>
-          <tr><td>What you drink</td><td>A few large, milder cups that taste much the same</td><td>Many small, stronger cups whose taste changes with each steep</td></tr>
-          <tr><td>Suits</td><td>Class, study, anywhere without a kettle</td><td>Sitting at home with hot water to hand</td></tr>
+          <tr><td>Leaf per 100 ml</td><td class="num v-long">1 g</td><td class="num v-short">2–4 g</td></tr>
+          <tr><td>Each steep</td><td class="v-long">Minutes</td><td class="v-short">Seconds</td></tr>
+          <tr><td>Brews from one 5 g piece</td><td class="num v-long">2–4</td><td class="num v-short">5–10</td></tr>
+          <tr><td>Tea from one 5 g piece</td><td class="num v-long">about 1–2 L</td><td class="num v-short">about 0.5–1 L</td></tr>
+          <tr><td>What you drink</td><td class="v-long">A few large, milder cups that taste much the same</td><td class="v-short">Many small, stronger cups whose taste changes with each steep</td></tr>
+          <tr><td>Suits</td><td class="v-long">Class, study, anywhere without a kettle</td><td class="v-short">Sitting at home with hot water to hand</td></tr>
         </tbody>
       </table>
     </div>
     <p class="legend">Per gram, the flask gives roughly twice the tea, milder. The gaiwan gives less, and shows how the tea changes. The litres are my arithmetic: brews times cup size, less what the leaves hold back. The taste comparison is general tea-drinking knowledge, not from a source. The 2025 caffeine study notes that one steep doesn't pull all the caffeine from the leaf; that takes several hot steeps.</p>
-    <p class="sub">Enter any vessel size below.</p>
+    <p class="sub">For a vessel or tea that isn't on the chart. The mode above sets gongfu or long steeps, and picking a vessel fills in its size; change the water to suit yours.</p>
     <div class="calc">
       <div class="calc-row">
         <div class="field"><label class="label" for="c-vol">Water, ml</label><input id="c-vol" type="number" inputmode="numeric" min="30" max="3000" step="10" value="500"></div>
@@ -396,12 +391,6 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
             <option value="ripe">Ripe pu-erh</option>
             <option value="scented">Scented (jasmine, rose and so on)</option>
             <option value="dark">Other dark tea, simmered</option>
-          </select>
-        </div>
-        <div class="field"><label class="label" for="c-method">Steeping</label>
-          <select id="c-method">
-            <option value="long">Long, minutes (flask, mug)</option>
-            <option value="short">Short, seconds (gaiwan, small pot)</option>
           </select>
         </div>
       </div>
@@ -445,7 +434,7 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
 
   <section>
     <h2>Principles by tea type</h2>
-    <p class="sub">For teas beyond these seven. The Mode filter above switches between the gongfu and long-steep columns. The Basis column says where each row comes from. Tap a row to highlight it; tap anywhere else to clear it.</p>
+    <p class="sub">For teas beyond these seven. The Mode filter above switches between the gongfu and long-steep columns. The Basis column says where each row comes from. Tap a row to highlight it; tap it again, or anywhere else, to clear it.</p>
     <div class="scroll">
       <table class="ptable" data-cards data-title="0" data-pick>
         <thead>
@@ -661,25 +650,25 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
 
 <script>
 (function(){
-  /* view: mode (long / gongfu), leaf in the flask, gongfu vessels */
-  var KEY="pressed-tea-view";
-  var state={long:true,gongfu:false,gaiwan:true,teapot:true,leaf:"5"};
+  /* view: one mode, then one leaf amount (500 ml flask) or one gongfu vessel */
+  var KEY="pressed-tea-guide";
+  var state={mode:"long",vessel:"gaiwan",leaf:"5"};
+  var OK={mode:["long","gongfu"],vessel:["gaiwan","teapot"],leaf:["5","7.5","10"]};
   try{
     var s=JSON.parse(localStorage.getItem(KEY)||"null");
-    if(s&&typeof s==="object"){
-      ["long","gongfu","gaiwan","teapot"].forEach(function(k){if(typeof s[k]==="boolean")state[k]=s[k];});
-      if(["5","7.5","10"].indexOf(s.leaf)>=0)state.leaf=s.leaf;
-    }else{
-      /* carry over the earlier vessel-only setting */
-      var o=JSON.parse(localStorage.getItem("pressed-tea-vessels")||"null");
-      if(o&&typeof o==="object"){state.long=!!o.flask;state.gongfu=!!(o.gaiwan||o.teapot);if(state.gongfu){state.gaiwan=!!o.gaiwan;state.teapot=!!o.teapot;}}
+    if(!s){
+      /* carry over the earlier multi-select setting */
+      var o=JSON.parse(localStorage.getItem("pressed-tea-view")||"null");
+      if(o&&typeof o==="object")s={mode:o.long===false&&o.gongfu?"gongfu":"long",vessel:o.gaiwan===false&&o.teapot?"teapot":"gaiwan",leaf:o.leaf};
     }
+    if(s&&typeof s==="object")Object.keys(OK).forEach(function(k){if(OK[k].indexOf(s[k])>=0)state[k]=s[k];});
   }catch(e){}
   var app=document.getElementById("app");
   var routine=document.getElementById("routine-sec");
   var main=document.querySelector("table[data-group]");
   var note=document.getElementById("flask-note");
   var NOTE={"5":"one piece, 5–6 g","7.5":"7.5 g, broken off a bar","10":"two 5 g pieces, or 10 g"};
+  var SIZE={long:500,gaiwan:120,teapot:250};
   var flaskCells=[].slice.call(main.querySelectorAll("[data-l10]"));
   flaskCells.forEach(function(td){td.dataset.l5=td.innerHTML;});
   function leaf(){
@@ -687,31 +676,30 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
     flaskCells.forEach(function(td){td.innerHTML=td.dataset[k];});
     note.textContent=NOTE[state.leaf];
   }
+  function fitVolume(){vol.value=SIZE[state.mode==="long"?"long":state.vessel];}
   function apply(){
-    app.classList.toggle("show-long",state.long);
-    app.classList.toggle("show-flask",state.long);
-    app.classList.toggle("show-short",state.gongfu);
-    app.classList.toggle("show-gaiwan",state.gongfu&&state.gaiwan);
-    app.classList.toggle("show-teapot",state.gongfu&&state.teapot);
-    routine.style.display=state.long?"flex":"none";
-    document.querySelectorAll(".fgroup[data-for]").forEach(function(g){g.hidden=!state[g.dataset.for];});
-    document.querySelectorAll(".chip").forEach(function(b){
-      b.setAttribute("aria-pressed",String(b.dataset.leaf?b.dataset.leaf===state.leaf:!!state[b.dataset.k]));
-    });
+    var long=state.mode==="long";
+    app.classList.toggle("show-long",long);
+    app.classList.toggle("show-flask",long);
+    app.classList.toggle("show-short",!long);
+    app.classList.toggle("show-gaiwan",!long&&state.vessel==="gaiwan");
+    app.classList.toggle("show-teapot",!long&&state.vessel==="teapot");
+    routine.style.display=long?"flex":"none";
+    document.querySelectorAll(".fgroup[data-for]").forEach(function(g){g.hidden=g.dataset.for!==state.mode;});
+    document.querySelectorAll(".chip").forEach(function(b){b.setAttribute("aria-checked",String(state[b.dataset.set]===b.dataset.val));});
+    calc();
   }
   document.querySelectorAll(".chip").forEach(function(b){
     b.addEventListener("click",function(){
-      if(b.dataset.leaf){
-        if(state.leaf===b.dataset.leaf)return;
-        state.leaf=b.dataset.leaf;leaf();
-        if(window.buildCards)window.buildCards(main);
-      }else state[b.dataset.k]=!state[b.dataset.k];
+      var k=b.dataset.set,v=b.dataset.val;
+      if(state[k]===v)return;
+      state[k]=v;
+      if(k==="leaf"){leaf();if(window.buildCards)window.buildCards(main);}
+      else fitVolume();
       try{localStorage.setItem(KEY,JSON.stringify(state));}catch(e){}
       apply();
     });
   });
-  leaf();
-  apply();
 
   /* leaf calculator: grams per 100 ml [min,max] */
   var R={
@@ -725,21 +713,23 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
     scented:{short:[2,2],long:[1,2],why:{short:"1 g per 50 ml (Chayu guide).",long:"1 g per 100 ml for the longest, most economical steeps, up to 2 g for shorter ones. More crowds the vessel."}},
     dark:{short:[1,1.25],long:[1,1.25],why:{short:"simmered at 1 g per 80–100 ml (Chayu guide).",long:"simmered at 1 g per 80–100 ml (Chayu guide)."}}
   };
-  var vol=document.getElementById("c-vol"),typ=document.getElementById("c-type"),met=document.getElementById("c-method");
+  var vol=document.getElementById("c-vol"),typ=document.getElementById("c-type");
   var out=document.getElementById("c-out"),why=document.getElementById("c-why");
   function r5(x){return Math.round(x*2)/2;}
   function fmt(x){return (x%1===0?x.toFixed(0):x.toFixed(1));}
   function calc(){
     var v=parseFloat(vol.value);
     if(!(v>0)){out.textContent="–";why.textContent="Enter the water volume in ml.";return;}
-    var d=R[typ.value],m=met.value,a=d[m];
+    var d=R[typ.value],m=state.mode==="long"?"long":"short",a=d[m];
     var lo=r5(a[0]*v/100),hi=r5(a[1]*v/100);
     if(lo<0.5)lo=0.5; if(hi<0.5)hi=0.5;
     out.textContent=(lo===hi?fmt(lo):fmt(lo)+"–"+fmt(hi))+" g";
-    why.textContent="For "+fmt(v)+" ml: "+d.why[m];
+    why.textContent="For "+fmt(v)+" ml, "+(m==="long"?"long steeps":"gongfu")+": "+d.why[m];
   }
-  [vol,typ,met].forEach(function(el){el.addEventListener("input",calc);el.addEventListener("change",calc);});
-  calc();
+  [vol,typ].forEach(function(el){el.addEventListener("input",calc);el.addEventListener("change",calc);});
+  leaf();
+  fitVolume();
+  apply();
 })();
 
 /* mobile: rebuild each data-cards table as a stack of cards (one per row), so merged cells repeat per tea */
@@ -835,10 +825,11 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
     document.documentElement.classList.toggle("has-sel",i!=null);
   }
   function hit(e){return e.target.closest&&e.target.closest("table[data-pick] tbody tr, .pick-cards .card");}
-  document.addEventListener("click",function(e){var h=hit(e);select(h?h.dataset.ri:null);});
+  function toggle(h){select(h&&!h.classList.contains("sel")?h.dataset.ri:null);}
+  document.addEventListener("click",function(e){toggle(hit(e));});
   document.addEventListener("keydown",function(e){
     var h=hit(e);
-    if(h&&(e.key==="Enter"||e.key===" ")){e.preventDefault();select(h.dataset.ri);}
+    if(h&&(e.key==="Enter"||e.key===" ")){e.preventDefault();toggle(h);}
     else if(e.key==="Escape")select(null);
   });
 })();
