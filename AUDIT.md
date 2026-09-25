@@ -57,8 +57,8 @@ Where no source fits, impute rather than leave the cell empty, in this order:
 - **R**: re-read in this audit; the quote is below.
 - **C**: carried from the earlier chat's check (quotes or page scans); the
   source couldn't be re-read now (link down, or a scan). Flagged on the page.
-- **BOX**: from the earlier chat's transcription of the box photo. The photo
-  isn't in the repo; re-check when the user sends it again.
+- **BOX**: from the Jesse's Teahouse box; checked against the photos in
+  `sources/jesses-moonlight-box-*.webp` on 2026-09-25.
 - **D**: derived; the working is shown.
 - **I**: Claude-imputed. No source gives the value, so it is imputed by the
   method below and shown on the page in the imputed style (a slightly grey
@@ -89,6 +89,8 @@ Where no source fits, impute rather than leave the cell empty, in this order:
 | GB/T 23776 | GB/T 23776-2018, sensory evaluation of tea (page scans on foodmate) | C |
 
 ### Key quotes
+
+- **Box** (`sources/jesses-moonlight-box-back.webp`): "85°C/185°F"; "First Steep (Wash): 3 seconds (5g/one piece)"; "Gaiwan (120ml): 10 seconds (5g/one piece)"; "Teapot (250ml): 15 seconds (5g/one piece)"; "10 steeps in 120ml Gaiwan"; "Break off one piece of tea from the bar and steep in 85°C/185°F water for 3 seconds to allow tea leaves to expand and open. Discard this rinse. Steep the tea fo 10 seconds; if the flavor is too light, steep a bit longer or raise temperature fo 100°C/212°F to bring out deeper flavors." Also: Yunnan; 2024&2025; "12 servings per container", "Serving size 5g"; front: "Moonlight White White Tea \"Chocolate Bar\" 月光白白茶 巧克力砖", "Net Weight: 60g (30g x2)".
 
 - **Chayu, white**: "茶水比是1:50 … 白茶用盖碗泡，通常出5泡就好了，前3泡 … 95度的水温10秒左右出汤就好；第4泡需要100度水温浸泡20秒出汤，第5泡需要100度水温浸泡30秒出汤。玻璃壶泡白茶的方法请参考红碎茶的泡法"
 - **Chayu, black**: "茶水比例1:30，通常5泡，第1、2、3、4泡都是95度的水温，10秒左右出汤就好；第5泡 … 100度的水温15秒出汤。" Broken black: "一般一泡就好 … 茶水比例1:50。"
@@ -219,7 +221,6 @@ the 10 s pu-erh wash (replaced by YS); the two-flask routine section.
 
 ## Open items
 
-- Re-check every `BOX` value against the box photo.
 - Re-read T/MCYX 012-2024, T/CSTEA 00050-2022 and GB/T 23776-2018 from a
   network that can reach ttbz.org.cn and foodmate.net, or from copies the
   user supplies.

@@ -11,8 +11,9 @@ This chart is a source of truth. Every value on it is one of:
 
 - **Looked up**: from a source you actually read, named in the row's Basis
   column (or the tab's source list), with a working link.
-- **From the package**: marked `BOX` (the Jesse's Teahouse box) or `LABEL`
-  (that product's own package), read off the user's photo.
+- **From the package**: marked `BOX` (the Jesse's Teahouse box; photos in
+  `sources/`) or `LABEL` (that product's own package), read off the user's
+  photo. Keep package photos in `sources/` so later audits can re-read them.
 - **Derived**: worked out from looked-up values (interpolation, unit
   conversion, a ratio scaled to the flask), and labelled as derived with the
   working shown.
