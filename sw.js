@@ -1,6 +1,6 @@
 /* Offline support. Bump VERSION whenever index.html or the icons change,
    so installed copies pick up the new files. */
-var VERSION = "v7";
+var VERSION = "v8";
 var CORE = "tea-core-" + VERSION;
 var FONTS = "tea-fonts";
 var FILES = [

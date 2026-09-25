@@ -245,6 +245,8 @@ a:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 /* tap a row in any chart to highlight it; tap it again to clear. Merged cells
    are marked too, since they belong to every row they span. */
 table[data-pick] tbody tr{cursor:pointer}
+/* a cell folded into the identical one above it (see mergeTables) */
+td.merged-away{display:none!important}
 table[data-pick] tbody .sel{background:var(--hl)}
 table[data-pick] tbody .sel-edge{box-shadow:inset 4px 0 0 var(--box)}
 table[data-pick] tbody tr:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
@@ -334,9 +336,9 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
 
   <main id="view-pressed" class="view">
   <section>
-    <p class="sub">Seven pressed teas, one 5 g piece each. Pick the mode and vessel above. Under Steeps, "first" is the first steep and "subsequent" says how to lengthen the rest and how many the leaf gives. Every value is from the box, a named source, or Claude-imputed where none exists (styled as in the key); the legend and sources below say which.</p>
+    <p class="sub">Seven pressed teas, one 5 g piece each. Pick the mode and vessel above. Under Steeps, "first" is the first steep and "subsequent" says how to lengthen the rest and how many the leaf gives. Every value is from the box, a named source, or Claude-imputed where none exists (styled as in the key); the legend and sources below say which. Neighbouring teas of the same type that share a value, for the mode and vessel shown, share one cell.</p>
     <div class="scroll">
-      <table data-cards data-title="1" data-group="0" data-pick id="pressed-table">
+      <table data-cards data-title="1" data-group="0" data-pick data-merge id="pressed-table">
         <thead>
           <tr>
             <th rowspan="3">Type</th>
@@ -462,7 +464,7 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
     <section>
       <p class="sub">Loose teas and herbals on hand. Every value is from the package (<span class="src">LABEL</span>), a source named in the Basis column, or Claude-imputed where none exists (styled as in the key); figures marked derived are worked out from sources. Long steeps are for the 500 ml flask; Gongfu shows a short method only where a source gives one. Tap a row to highlight it; tap again to clear.</p>
       <div class="scroll">
-        <table data-cards data-title="1" data-group="0" data-pick id="loose-table">
+        <table data-cards data-title="1" data-group="0" data-pick data-merge id="loose-table">
           <thead>
             <tr>
               <th rowspan="3">Type</th>
@@ -662,7 +664,7 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
     <h2>Principles by tea type</h2>
     <p class="sub">For teas beyond the charts. The Mode filter above switches between the gongfu and long-steep columns. Tap a row to highlight it and tap it again to clear it; highlights are kept for next time.</p>
     <div class="scroll">
-      <table class="ptable" data-cards data-title="0" data-pick id="principles-table">
+      <table class="ptable" data-cards data-title="0" data-pick data-merge id="principles-table">
         <thead>
           <tr>
             <th rowspan="3">Type</th>
@@ -872,6 +874,7 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
     });
     document.querySelectorAll(".chip").forEach(function(b){b.setAttribute("aria-checked",String(state[b.dataset.set]===b.dataset.val));});
     calc();
+    if(window.mergeTables)window.mergeTables();
   }
   function save(){try{localStorage.setItem(KEY,JSON.stringify({tab:state.tab,mode:state.mode,vessel:state.vessel}));}catch(e){}}
 
@@ -1032,6 +1035,28 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
   }
   window.buildCards=build;
   window.tableGrid=grid;
+
+  /* Tables marked data-merge are written with rowspans for readability. Split them so every
+     row owns its own copy of each value (the group column excepted); mergeTables() below then
+     re-merges whatever is identical for the current filters. Runs before the cards are built,
+     so each card gets its own values. */
+  function normalise(t){
+    var rows=[].slice.call(t.tBodies[0].rows),g=grid(rows),n=g.length?g[0].length:0;
+    var gc=t.dataset.group!=null?+t.dataset.group:-1,spanned=[];
+    var order=rows.map(function(tr,r){
+      var list=[];
+      for(var c=0;c<n;c++){
+        var cell=g[r][c];
+        if(!cell||(c>0&&g[r][c-1]===cell))continue;
+        if(cell.parentNode===tr){list.push(cell);if(c!==gc&&cell.rowSpan>1)spanned.push(cell);}
+        else if(c!==gc){var k=cell.cloneNode(true);k.rowSpan=1;list.push(k);}
+      }
+      return list;
+    });
+    rows.forEach(function(tr,r){order[r].forEach(function(cell){tr.appendChild(cell);});});
+    spanned.forEach(function(cell){cell.rowSpan=1;});
+  }
+  document.querySelectorAll("table[data-merge]").forEach(normalise);
   document.querySelectorAll("table[data-cards]").forEach(build);
 })();
 
@@ -1060,7 +1085,10 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
         var on=!!marked[keys[r]];
         rows[r].setAttribute("aria-pressed",String(on));
         if(!on)return;
-        row.forEach(function(cell,c){if(cell&&c!==gc)cell.classList.add("sel");});
+        row.forEach(function(cell,c){
+          var shown=t._cover&&t._cover[r]&&t._cover[r][c]||cell;
+          if(shown&&c!==gc)shown.classList.add("sel");
+        });
         if(row[tc])row[tc].classList.add("sel-edge");
       });
       if(t._cards)[].forEach.call(t._cards.querySelectorAll(".card"),function(card){
@@ -1089,6 +1117,56 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
     var h=hit(e);
     if(h&&(e.key==="Enter"||e.key===" ")){e.preventDefault();h.t._toggle(h.ri);}
   });
+})();
+
+/* Merge neighbouring cells that read the same for the current mode and vessel: down each
+   column, within a tea type, a run of identical values becomes one cell. Compared as
+   rendered, so a temperature cell compares only the half its mode shows, and an imputed
+   value never merges with a sourced one (their markup differs). Re-run on every filter change. */
+(function(){
+  var app=document.getElementById("app");
+  var tables=[].slice.call(document.querySelectorAll("table[data-merge]")).map(function(t){
+    var rows=[].slice.call(t.tBodies[0].rows);
+    return {t:t,rows:rows,g:window.tableGrid(rows),tc:+t.dataset.title,gc:t.dataset.group!=null?+t.dataset.group:-1};
+  });
+  function shown(cell){
+    var k=cell.cloneNode(true),hide=app.classList.contains("show-long")?".ms":".ml";
+    [].forEach.call(k.querySelectorAll(hide),function(x){x.remove();});
+    return k.innerHTML.replace(/\s+/g," ").trim();
+  }
+  function merge(T){
+    var g=T.g,n=g.length,m=n?g[0].length:0,cover=[];
+    for(var r=0;r<n;r++)cover[r]=[];
+    T.rows.forEach(function(tr){[].forEach.call(tr.cells,function(cell,i){
+      if(cell.classList.contains("cat"))return;
+      cell.rowSpan=1;cell.classList.remove("merged-away");
+    });});
+    for(var c=0;c<m;c++){
+      if(c===T.tc||c===T.gc)continue;
+      var r0=0;
+      while(r0<n){
+        var a=g[r0][c];
+        if(!a||(c>0&&g[r0][c-1]===a)){r0++;continue;}
+        var key=shown(a),r1=r0+1;
+        while(r1<n){
+          var b=g[r1][c];
+          if(!b||b.colSpan!==a.colSpan||(c>0&&g[r1][c-1]===b))break;
+          if(T.gc>=0&&g[r1][T.gc]!==g[r0][T.gc])break;
+          if(shown(b)!==key)break;
+          r1++;
+        }
+        if(r1-r0>1){
+          a.rowSpan=r1-r0;
+          for(var k=r0+1;k<r1;k++){g[k][c].classList.add("merged-away");for(var j=0;j<a.colSpan;j++)cover[k][c+j]=a;}
+        }
+        r0=r1;
+      }
+    }
+    T.t._cover=cover;
+    if(T.t._paint)T.t._paint();
+  }
+  window.mergeTables=function(){tables.forEach(merge);};
+  window.mergeTables();
 })();
 
 /* offline + install */

@@ -41,6 +41,11 @@ same commit.
   title cell text.
 - The tables are the data. On phones (≤720px) each `table[data-cards]` is
   rebuilt as cards by script, so edit the table, never the cards.
+- `table[data-merge]` rows are split at load so each tea owns its values, then
+  `mergeTables()` re-merges identical neighbouring cells down each column,
+  within a tea type, for the current mode and vessel; it runs on every filter
+  change. Rowspans written in the HTML are only a starting point. An imputed
+  value never merges with a sourced one, because their markup differs.
 - It is an installable PWA. `manifest.webmanifest` and `sw.js` ship with it; a
   file added to the app must also go in `FILES` in `sw.js`. Bump `VERSION`
   there when the icons or cached files change.
