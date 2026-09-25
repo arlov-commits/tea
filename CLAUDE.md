@@ -41,6 +41,11 @@ same commit.
   title cell text.
 - The tables are the data. On phones (≤720px) each `table[data-cards]` is
   rebuilt as cards by script, so edit the table, never the cards.
+- Line breaks follow rules, not hand-placed `<br>`s: a typography pass at load
+  keeps a number with its unit, a range whole, "×2" with its value and a short
+  word with the next one; a `<small>` in a value cell is its own qualifier line
+  under the value; steep sequences read "10s ×2" / "then: 20s, 30s" / count.
+  Write new values plainly and let the rules handle the breaks.
 - `table[data-merge]` rows are split at load so each tea owns its values, then
   `mergeTables()` re-merges identical neighbouring cells down each column,
   within a tea type, for the current mode and vessel; it runs on every filter
