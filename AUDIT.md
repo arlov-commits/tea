@@ -61,8 +61,9 @@ Where no source fits, impute rather than leave the cell empty, in this order:
   isn't in the repo; re-check when the user sends it again.
 - **D**: derived; the working is shown.
 - **I**: Claude-imputed. No source gives the value, so it is imputed by the
-  method below and shown on the page in the imputed style (italic, its own
-  colour, dotted underline), with the method in the Basis or legend.
+  method below and shown on the page in the imputed style (a slightly grey
+  serif italic with a small † after it), with the method in the Basis or
+  legend.
 
 ## Sources (as re-read on 2026-09-25)
 
