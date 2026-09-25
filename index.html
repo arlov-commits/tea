@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Pressed Tea Brew Chart</title>
+<title>Tea Brew Chart</title>
 <link rel="icon" type="image/svg+xml" href="icons/icon.svg">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
@@ -37,6 +37,13 @@
   --c-rose:#f0a19a;
   --c-nuomi:#f1e3c6;
   --c-bingdao:#c9463a;
+  --c-longjing:#a9c25d;
+  --c-ginger:#e0a23a;
+  --c-eb:#7b3a22;
+  --c-earl:#8a6f9e;
+  --c-rooibos:#b4532f;
+  --c-goji:#3d2b63;
+  --c-mystery:repeating-linear-gradient(45deg,#c9cfc8 0 3px,#eef1ec 3px 6px);
   --serif:"Noto Serif SC","Songti SC","SimSun",Georgia,serif;
   --sans:"Public Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
   --mono:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace;
@@ -56,11 +63,70 @@
   --chip:#25302b; --warn:#f0b48c; --box:#e9c77a; --box-bg:#3a3020; --hl:#3d3822;
 }
 *{box-sizing:border-box}
+/* The ground is set on the root as well as the body: Chrome on Android tints the
+   system navigation bar from the root. */
+html{background:var(--bg)}
 body{
-  background:var(--bg);color:var(--ink);font-family:var(--sans);
-  font-size:15px;line-height:1.5;padding-inline:16px;padding-block:24px 48px;
+  margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);
+  font-size:15px;line-height:1.5;
+  /* clip, not hidden: the body must not become a scroll container */
+  overflow-x:clip;
 }
-.wrap{max-width:1320px;margin:0 auto;display:flex;flex-direction:column;gap:32px}
+[hidden]{display:none!important}
+
+/* shell: one viewport tall; only .pane scrolls, and the tab bar is the last child
+   of the column, in ordinary flow. No position:fixed anywhere in the chrome: a
+   fixed bar sits against the layout viewport, which Android Chrome keeps at the
+   taller URL-bar-hidden height, and hangs below the glass. Same construction as
+   the Bodhi Precepts and Academic Planner apps. */
+.shell{height:100vh;height:100dvh;display:flex;flex-direction:column;overflow:hidden}
+/* min-height:0 is load-bearing: without it the column overflows and pushes the
+   bar off the bottom of the screen */
+.frame{flex:1 1 auto;min-height:0;display:flex;position:relative}
+.pane{flex:1 1 auto;min-width:0;overflow-y:auto;overflow-x:clip;
+  overscroll-behavior-y:contain;-webkit-overflow-scrolling:touch}
+.wrap{max-width:1320px;margin:0 auto;padding:24px 16px 48px;display:flex;flex-direction:column;gap:32px}
+.view{display:flex;flex-direction:column;gap:32px}
+
+/* navs: one set of tabs drawn twice, a bar across the foot on a phone and the
+   same cells stood on end as a rail on a wide screen. Icons are monochrome SVG
+   masks tinted with background-color, so one rule recolours them. */
+:root{
+  --nv-pressed:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'%3E%3Cellipse cx='12' cy='13.5' rx='9' ry='5.5'/%3E%3Cpath d='M3 13.5v-2c0-3 4-5.5 9-5.5s9 2.5 9 5.5v2'/%3E%3Cellipse cx='12' cy='11' rx='2.4' ry='1.3'/%3E%3C/svg%3E");
+  --nv-loose:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 19C5 10.5 10.5 5 19 5c0 8.5-5.5 14-14 14z'/%3E%3Cpath d='M5 19l9-9'/%3E%3C/svg%3E");
+  --nv-guide:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 5.5c3-1.2 6-1 9 .9 3-1.9 6-2.1 9-.9v13c-3-1.2-6-1-9 .9-3-1.9-6-2.1-9-.9z'/%3E%3Cpath d='M12 6.4v13.4'/%3E%3C/svg%3E");
+}
+.nav-icon{display:inline-block;width:22px;height:22px;flex-shrink:0;background-color:var(--muted);
+  -webkit-mask:var(--icon) center/contain no-repeat;mask:var(--icon) center/contain no-repeat}
+.bn-item .nav-icon{width:24px;height:24px}
+.nav-item .nav-icon{width:20px;height:20px}
+.nav-item:hover .nav-icon,.nav-item.active .nav-icon,.bn-item.active .nav-icon{background-color:var(--ink)}
+.sidenav{display:none;flex:0 0 6.5rem;background:var(--surface);border-right:1px solid var(--line);
+  flex-direction:column;padding:.6rem .3rem;gap:.2rem;overflow-y:auto}
+.sidenav-title{font-family:var(--serif);font-size:.95rem;font-weight:700;letter-spacing:.08em;
+  color:var(--accent);padding:.25rem .3rem .5rem;flex:0 0 auto;text-align:center}
+/* The cell divides the rail's height; the face carries the active ground. The
+   leading border is reserved on every item so picking one doesn't shift it. */
+.nav-item{flex:1 1 0;min-height:2.6rem;display:flex;align-items:center;justify-content:center;
+  width:100%;background:none;border:0;border-left:2px solid transparent;color:var(--muted);
+  font:inherit;font-size:.72rem;font-weight:600;padding:.2rem;cursor:pointer}
+.nav-face{display:flex;flex-direction:column;align-items:center;gap:.3rem;padding:.5rem .4rem;border-radius:8px}
+.nav-item:hover{color:var(--ink)}
+.nav-item:hover .nav-face{background:var(--chip)}
+.nav-item.active{color:var(--ink);border-left-color:var(--accent)}
+.nav-item.active .nav-face{background:var(--chip);box-shadow:inset 0 0 0 1px var(--line)}
+.bottomnav{flex:0 0 auto;display:flex;background:var(--surface);border-top:1px solid var(--line);
+  padding-bottom:env(safe-area-inset-bottom,0)}
+.bn-item{flex:1;display:flex;align-items:center;justify-content:center;background:none;border:0;
+  border-top:2px solid transparent;color:var(--muted);font:inherit;font-size:.72rem;font-weight:600;
+  letter-spacing:.02em;padding:.5rem .15rem .45rem;cursor:pointer}
+.bn-item .nav-face{gap:.2rem;padding:0}
+.bn-item.active{color:var(--ink);border-top-color:var(--accent)}
+.nav-item:focus-visible,.bn-item:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
+@media (min-width:820px){
+  .sidenav{display:flex}
+  .bottomnav{display:none}
+}
 header{display:flex;flex-direction:column;gap:8px;max-width:72ch}
 h1{font-family:var(--serif);font-size:clamp(26px,5vw,36px);line-height:1.15;margin:0;text-wrap:balance}
 h2{font-size:18px;margin:0;text-wrap:balance}
@@ -144,6 +210,10 @@ tbody tr.gstart td,tbody tr.gstart th{border-top:2px solid var(--line-strong)}
 .ptable td.note{min-width:220px}
 .ptable td:nth-child(3){min-width:150px}
 .basis{font-size:12px;color:var(--muted);min-width:300px}
+#loose-table td{font-size:13.5px}
+#loose-table td.num{white-space:normal;min-width:88px}
+#loose-table td.note{min-width:240px}
+#loose-table .tea{min-width:200px}
 .sources{border-top:1px solid var(--line);padding-top:16px;font-size:13.5px;color:var(--muted);max-width:85ch;display:flex;flex-direction:column;gap:8px}
 .sources ul{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:4px}
 .sources p{margin:0}
@@ -158,20 +228,13 @@ table[data-pick] tbody tr:focus-visible{outline:2px solid var(--accent);outline-
 .pick-cards .card{cursor:pointer}
 .pick-cards .card.sel{background:var(--hl);border-color:var(--box);box-shadow:inset 4px 0 0 var(--box)}
 .pick-cards .card:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
-@media (hover:none){
-  /* iOS only sends taps on blank space to the page when it looks clickable */
-  html.has-sel body{cursor:pointer;-webkit-tap-highlight-color:transparent}
-}
 
 /* mobile cards: built from the tables by script, shown only on narrow screens */
 html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
 .cards{display:none}
 @media (max-width:720px){
-  body{
-    padding-left:max(16px,env(safe-area-inset-left));padding-right:max(16px,env(safe-area-inset-right));
-    padding-bottom:max(48px,env(safe-area-inset-bottom));
-  }
-  .wrap{gap:28px}
+  .wrap{gap:28px;padding-left:max(16px,env(safe-area-inset-left));padding-right:max(16px,env(safe-area-inset-right))}
+  .view{gap:28px}
   .filters{
     position:sticky;top:0;z-index:5;background:var(--bg);
     margin-inline:-16px;padding:8px 16px;border-bottom:1px solid var(--line);
@@ -216,10 +279,15 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
 
 </head>
 <body>
+<!-- The shell is one viewport tall and never itself scrolls; .pane (#scroll) is
+     what moves, and the tab bar is the last child of the column. -->
+<div class="shell">
+  <div class="frame">
+    <nav class="sidenav" id="side-nav" aria-label="Views"></nav>
+    <div class="pane" id="scroll">
 <div class="wrap" id="app">
   <header>
-    <h1>Pressed Tea Brew Chart</h1>
-    <p class="sub">Seven pressed teas. Each column gives the first steep, how to lengthen later steeps, and how many steeps the leaf gives. Rows of the same tea type share merged settings.</p>
+    <h1 id="brand-name">Pressed Tea Brew Chart</h1>
   </header>
 
   <div class="filters">
@@ -228,20 +296,23 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
       <button class="chip" role="radio" data-set="mode" data-val="long" aria-checked="true">Long steeps</button>
       <button class="chip" role="radio" data-set="mode" data-val="gongfu" aria-checked="false">Gongfu</button>
     </div>
-    <div class="fgroup" data-for="long" role="radiogroup" aria-label="Leaf in the 500 ml flask">
+    <div class="fgroup" data-for="long" data-tabs="pressed" role="radiogroup" aria-label="Leaf in the 500 ml flask">
       <span class="label">500 ml flask</span>
       <button class="chip" role="radio" data-set="leaf" data-val="5" aria-checked="true">5 g</button>
       <button class="chip" role="radio" data-set="leaf" data-val="7.5" aria-checked="false">7.5 g</button>
       <button class="chip" role="radio" data-set="leaf" data-val="10" aria-checked="false">10 g</button>
     </div>
-    <div class="fgroup" data-for="gongfu" role="radiogroup" aria-label="Vessel" hidden>
+    <div class="fgroup" data-for="gongfu" data-tabs="pressed guide" role="radiogroup" aria-label="Vessel" hidden>
       <span class="label">Vessel</span>
       <button class="chip" role="radio" data-set="vessel" data-val="gaiwan" aria-checked="true">Gaiwan 120 ml</button>
       <button class="chip" role="radio" data-set="vessel" data-val="teapot" aria-checked="false">Teapot 250 ml</button>
     </div>
   </div>
 
+
+  <main id="view-pressed" class="view">
   <section>
+    <p class="sub">Seven pressed teas. Each column gives the first steep, how to lengthen later steeps, and how many steeps the leaf gives. Rows of the same tea type share merged settings.</p>
     <div class="scroll">
       <table data-cards data-title="1" data-group="0">
         <thead>
@@ -358,6 +429,182 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
       <li><div><strong>Leftover wet leaves:</strong> fridge in a covered cup, use within 24 hours, wash again before steeping. Worth it mainly for pu-erh. (General food-handling practice, not from the tea sources.)</div></li>
     </ol>
   </section>
+  </main>
+
+  <main id="view-loose" class="view" hidden>
+    <section>
+      <p class="sub">Loose teas and herbals on hand. Every value is from the package (<span class="src">LABEL</span>) or from a source named in the Basis column; figures marked derived are worked out from those. Long steeps are for the 500 ml flask; Gongfu shows a short method only where a source gives one.</p>
+      <div class="scroll">
+        <table data-cards data-title="1" data-group="0" id="loose-table">
+          <thead>
+            <tr>
+              <th rowspan="2">Type</th>
+              <th rowspan="2">Tea</th>
+              <th rowspan="2">Water</th>
+              <th class="grp v-long vs" colspan="5">500 ml flask<small>long steeps</small></th>
+              <th class="grp v-short vs" colspan="4">Gongfu<small>short steeps</small></th>
+              <th rowspan="2">Notes</th>
+              <th rowspan="2">Basis</th>
+            </tr>
+            <tr>
+              <th class="v-long vs">Leaf</th><th class="v-long">1st</th><th class="v-long">Later steeps</th><th class="v-long">Brews</th><th class="v-long">Caffeine, 1st</th>
+              <th class="v-short vs">Leaf per 100 ml</th><th class="v-short">1st</th><th class="v-short">Later steeps</th><th class="v-short">Steeps</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- GREEN -->
+            <tr class="gstart">
+              <th class="cat" rowspan="2" scope="rowgroup"><span class="v" lang="zh">绿茶</span><span class="en">lǜchá</span><span class="en">Green</span></th>
+              <td><div class="tea" style="--sw:var(--c-longjing)"><span class="dot"></span><span class="tn"><span class="zh" lang="zh">龙井茶</span><span class="py">lóngjǐng chá · Dragon Well, Gan Chun tin and bag</span><span class="tag warn">Strain in the flask</span></span></div></td>
+              <td class="num">176°F <small>80°C</small><br><small>75–85°C in Jiemian</small></td>
+              <td class="num v-long vs">5 g <small>1 g per 100 ml</small></td>
+              <td class="num v-long">3 min</td>
+              <td class="num v-long">Not in sources</td>
+              <td class="num v-long">Weak by the 3rd <small>(glass)</small></td>
+              <td class="num v-long">~38 <small>mg, derived</small></td>
+              <td class="num v-short vs">2 g <small>3 g per 150 ml glass</small></td>
+              <td class="num v-short">Drink down to ⅓</td>
+              <td class="num v-short">Top up with hot water</td>
+              <td class="num v-short">Weak by the 3rd</td>
+              <td class="note">The tin's printed standard, GB/T 22292, is China's jasmine-tea standard, so the tin looks generic; its sticker and the bag both say 龙井. Shelf life 18 months from the date on the tin's base<span class="src">LABEL</span>. An insulated flask keeps tea hot on its leaves, which draws out more bitterness, so strain it.</td>
+              <td class="basis">China Tea Museum 2020: West Lake Longjing in a glass, 3 g per 150 ml (1:50), about 80°C, top up when ⅓ remains; green tea is weak by the 3rd infusion. Jiemian 2017: 75–85°C, 1:50–60. Harney &amp; Sons: green tea at 175°F for 3 min. Kexin 2018: a thermos's long hot steep brings out bitterness. SAMR standards portal: GB/T 22292 is Jasmine tea. 5 g: this chart's 1 g per 100 ml. Caffeine: Ayakdaş 2025, green at 80°C, interpolated to 3 min, ×2.5.</td>
+            </tr>
+            <tr>
+              <td><div class="tea" style="--sw:var(--c-ginger)"><span class="dot"></span><span class="tn"><span class="zh">Ginger &amp; Turmeric Green Tea</span><span class="py">Mauna Kea Tea, Hawaiʻi · green tea, ginger, coconut, cinnamon, turmeric, black pepper</span></span></div></td>
+              <td class="num">212°F <small>100°C</small><span class="src">LABEL</span></td>
+              <td class="num v-long vs">2 tsp <small>label: 1 tsp per 8 oz</small></td>
+              <td class="num v-long">2–5 min<span class="src">LABEL</span></td>
+              <td class="num v-long">Label gives one steep</td>
+              <td class="num v-long">1</td>
+              <td class="num v-long">Not on label</td>
+              <td class="num v-short vs" colspan="4">Long steeps only: its label gives no short method</td>
+              <td class="note">Boiling water is the label's own instruction; Harney brews plain green tea cooler, at 175°F.</td>
+              <td class="basis">Label: 1 tsp in 8 oz boiling water for 2–5 min; ingredients as listed. 2 tsp: 500 ml ÷ 236.6 ml (a US cup, 8 fl oz) = 2.1.</td>
+            </tr>
+
+            <!-- BLACK -->
+            <tr class="gstart">
+              <th class="cat" rowspan="2" scope="rowgroup"><span class="v" lang="zh">红茶</span><span class="en">hóngchá</span><span class="en">Black</span></th>
+              <td><div class="tea" style="--sw:var(--c-eb)"><span class="dot"></span><span class="tn"><span class="zh">Special English Breakfast</span><span class="py">Harney &amp; Sons · black tea blend</span><span class="tag warn">Remove the leaves</span></span></div></td>
+              <td class="num">212°F <small>100°C</small><span class="src">LABEL</span></td>
+              <td class="num v-long vs">2 tsp <small>if a cup is 8 oz</small></td>
+              <td class="num v-long">4–5 min<span class="src">LABEL</span></td>
+              <td class="num v-long">Label gives one steep</td>
+              <td class="num v-long">1</td>
+              <td class="num v-long">~50 <small>mg per cup</small><span class="src">LABEL</span></td>
+              <td class="num v-short vs" colspan="4">Long steeps only: its label gives no short method</td>
+              <td class="note">Harney doesn't define its cup, on the tin or in its brewing guide. At 8 oz, 500 ml is 2.1 cups, so about 105 mg a flask by the label's figure. That's nearly twice what the caffeine study's black teas give for 5 g in 500 ml at 5 min (~58 mg, derived).</td>
+              <td class="basis">Label: filtered water, 1 tsp per cup, 212°F, 4–5 min, remove the leaves; caffeine 40–60 mg (midpoint shown). Harney black tea guide: 1 tsp per cup, boiling, 4–5 min; no cup size given. Study figure: Ayakdaş 2025, black at 100°C for 5 min, ×2.5.</td>
+            </tr>
+            <tr>
+              <td><div class="tea" style="--sw:var(--c-earl)"><span class="dot"></span><span class="tn"><span class="zh">Earl Grey</span><span class="py">brand unknown · black tea with bergamot oil</span><span class="tag warn">Tin mislabelled Heicha</span></span></div></td>
+              <td class="num">212°F <small>100°C</small></td>
+              <td class="num v-long vs">5 g <small>1 g per 100 ml</small></td>
+              <td class="num v-long">2–3 min</td>
+              <td class="num v-long">Not in sources</td>
+              <td class="num v-long">Not in sources</td>
+              <td class="num v-long">~45 <small>mg, derived</small></td>
+              <td class="num v-short vs" colspan="4">Long steeps only: no short method in these sources</td>
+              <td class="note">The tin says Heicha, but 黑茶 hēichá is fermented (dark) tea; what English calls black tea is 红茶 hóngchá in Chinese. Wikipedia gives 2–3 min for Earl Grey and warns that steeping too long turns it bitter; Harney gives 4–5 min for plain black tea.</td>
+              <td class="basis">Wikipedia, Earl Grey tea: black tea flavoured with bergamot oil; 2–3 min is a common recommendation; too long turns it bitter. Wikipedia, Fermented tea: 黑茶 is fermented tea, not English black tea (红茶). Harney black tea guide: boiling water. 5 g: this chart's 1 g per 100 ml. Caffeine: Ayakdaş 2025, black at 100°C, interpolated to 2½ min, ×2.5.</td>
+            </tr>
+
+            <!-- HERBAL -->
+            <tr class="gstart">
+              <th class="cat" rowspan="2" scope="rowgroup"><span class="v" lang="zh">草本</span><span class="en">cǎoběn</span><span class="en">Herbal</span></th>
+              <td><div class="tea" style="--sw:var(--c-rooibos)"><span class="dot"></span><span class="tn"><span class="zh">Premium Rooibos</span><span class="py">Zen's Tea House · South African red bush</span><span class="tag">No caffeine</span></span></div></td>
+              <td class="num">212°F <small>100°C</small><span class="src">LABEL</span></td>
+              <td class="num v-long vs">2 tsp <small>label: 1 tsp per 8 oz</small></td>
+              <td class="num v-long">5–7 min<span class="src">LABEL</span><br><small>10 min is fine</small></td>
+              <td class="num v-long">Not in sources</td>
+              <td class="num v-long">1</td>
+              <td class="num v-long">0 <small>mg</small></td>
+              <td class="num v-short vs" colspan="4">Long steeps only: its label gives no short method</td>
+              <td class="note">The SA Rooibos Council's chemist recommends boiling water and 10 min for the most antioxidants. Rooibos has fewer tannins than tea, so it's less astringent.</td>
+              <td class="basis">Label: 1 tsp per 8 oz, 212°F, 5–7 min. SA Rooibos Council (Francl, 2025): boiling water and 10 min; fewer tannins, less astringent; naturally caffeine-free. 2 tsp: 500 ml ÷ 236.6 ml = 2.1.</td>
+            </tr>
+            <tr>
+              <td><div class="tea" style="--sw:var(--c-goji)"><span class="dot"></span><span class="tn"><span class="zh" lang="zh">黑枸杞</span><span class="py">hēi gǒuqǐ · Qinghai black goji (Lycium ruthenicum), 川知味 Szechuan Flavor</span><span class="tag warn">Never boiling</span></span></div></td>
+              <td class="num">68–176°F <small>20–80°C</small></td>
+              <td class="num v-long vs">~2.5 g <small>2 g per 400 ml</small></td>
+              <td class="num v-long">A short rest <small lang="zh">静置片刻</small></td>
+              <td class="num v-long">Not in sources</td>
+              <td class="num v-long">Not in sources</td>
+              <td class="num v-long">Not stated</td>
+              <td class="num v-short vs" colspan="4">Long steeps only: no short method in these sources</td>
+              <td class="note">Dried berries, not tea; the jar gives no instructions. Water hotter than 80°C destroys the anthocyanins that colour it. The colour follows the water's pH: purple near neutral, bluer as the water gets more alkaline.</td>
+              <td class="basis">Wang Lixia, chief pharmacist, Guang'anmen Hospital, China Academy of Chinese Medical Sciences (dayi.org.cn, 2025): 400 ml of water at 20–80°C, about 2 g, rest briefly; too hot destroys the anthocyanins. Deng et al., <i>Molecules</i> 2022: anthocyanins are red at pH 1–2, purple at 6–7, bluer with more alkalinity. Jar: 草本花茶系列 (herbal flower-tea series), 130 g<span class="src">LABEL</span>. ~2.5 g: 2 g × 500 ÷ 400.</td>
+            </tr>
+
+            <!-- UNKNOWN -->
+            <tr class="gstart">
+              <th class="cat" scope="rowgroup"><span class="v" lang="zh">？</span><span class="en">Unknown</span></th>
+              <td><div class="tea" style="--sw:var(--c-mystery)"><span class="dot"></span><span class="tn"><span class="zh">Mystery tea</span><span class="py">unlabelled or relabelled</span><span class="tag">Taste, then adjust</span></span></div></td>
+              <td class="num">176°F <small>80°C</small><br><small>to start</small></td>
+              <td class="num v-long vs">5 g <small>1 g per 100 ml</small></td>
+              <td class="num v-long">3 min</td>
+              <td class="num v-long">Hotter or longer if thin</td>
+              <td class="num v-long">Taste each</td>
+              <td class="num v-long">Unknown</td>
+              <td class="num v-short vs" colspan="4">Match it to a type first, then use that row in Principles by tea type (Guide tab)</td>
+              <td class="note">First match the dry leaf to a type in Principles by tea type (Guide tab) and use that row. If you can't, start gentle: a steep that's too cool or short can be made up on the next one, but one that's too hot or long can't be undone.</td>
+              <td class="basis">Derived: 80°C for 3 min is Harney's setting for green and white tea, the gentlest timed setting in these sources. 5 g is this chart's 1 g per 100 ml. Step up per Brewing by feel.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="legend"><span class="src">LABEL</span> is from that product's own package. "Not in sources" means no source here gives a value, so none is guessed. 2 tsp for 500 ml is 500 ml ÷ 236.6 ml, a US cup of 8 fl oz, = 2.1; a teaspoon's weight varies by leaf, so weigh one level teaspoon of each once to compare with the gram rows. Caffeine is a midpoint. Derived caffeine is the caffeine study's per-200 ml value at the stated water temperature, interpolated to the steep time and ×2.5 for 500 ml (its 2 g in 200 ml is this chart's 1 g per 100 ml).</p>
+    </section>
+
+    <footer class="sources">
+      <h2 style="font-size:15px">Sources for this tab</h2>
+      <ul>
+        <li>The six packages (photos): Gan Chun 龙井茶 tin and 龍井 bag; Harney &amp; Sons Special English Breakfast; Mauna Kea Tea Ginger &amp; Turmeric Green Tea; Zen's Tea House Premium Rooibos; 川知味 青海黑枸杞 jar; the relabelled tin (Earl Grey).</li>
+        <li><a href="https://z.hangzhou.com.cn/2020/rwwhql/content/content_7731087.htm">China Tea Museum tea club, glass-cup brewing lesson</a> (中国茶叶博物馆, 2020-05-10). West Lake Longjing: 3 g per 150 ml, 1:50, about 80°C, top up at ⅓; green tea weak by the 3rd.</li>
+        <li><a href="https://www.jiemian.com/article/1405015.html">How to brew and drink West Lake Longjing</a> (Jiemian, 2017-06-18, from 中国普洱茶网). 75–85°C; 1:50–60; glass.</li>
+        <li><a href="https://www.kexinzhongxin.com/html/huati/3445.html">Yun Wuxin, "Is brewing tea in a thermos harmful?"</a> (Kexin Food and Health Information Center, 2018-09-12). Rejects the health claims; agrees the long hot steep makes tea more bitter.</li>
+        <li><a href="https://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=C7955F7F639BCAC7610D640E4B47DEF9">GB/T 22292-2008, 茉莉花茶 (Jasmine tea)</a>, national standards portal (SAMR). Now withdrawn.</li>
+        <li>Harney &amp; Sons: <a href="https://www.harney.com/blogs/news/black-tea-tips">How to Brew Black Tea</a> (1 tsp per cup, boiling, 4–5 min) and <a href="https://www.harney.com/blogs/news/ultimate-tea-brewing-guide-how-to-make-tea">The Ultimate Tea Brewing Guide</a> (green and white 175°F, 3 min; black 212°F, 5 min; herbal and rooibos 212°F, 5 min). Neither defines a cup.</li>
+        <li>Wikipedia: <a href="https://en.wikipedia.org/wiki/Earl_Grey_tea">Earl Grey tea</a>, <a href="https://en.wikipedia.org/wiki/Dark_tea">Fermented tea</a> (黑茶 vs 红茶), and <a href="https://en.wikipedia.org/wiki/Cup_(unit)">Cup (unit)</a> (US customary cup: 8 fl oz, 236.6 ml).</li>
+        <li><a href="https://sarooibos.co.za/an-experts-chemists-guide-to-brewing-the-perfect-cup-of-tea/">Michelle Francl, "An expert chemist's guide to brewing the perfect cup of tea"</a> (SA Rooibos Council, 2025-07-08).</li>
+        <li><a href="https://m.dayi.org.cn/qa/214898">Wang Lixia on soaking black goji</a> (China medical information platform, 2025-07-05).</li>
+        <li><a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC9502443/">Deng et al., "Improved Stability of Blue Colour of Anthocyanins from Lycium ruthenicum Murr."</a>, <i>Molecules</i> 2022.</li>
+        <li>Caffeine study: <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC12248710/">Ayakdaş &amp; Ağagündüz, <i>Foods</i> 2025</a>, Table 2: green at 80°C, 11 mg (2 min) and 23 mg (5 min) per 200 ml; black at 100°C, 17 mg (2 min) and 23 mg (5 min).</li>
+      </ul>
+    </footer>
+  </main>
+
+  <main id="view-guide" class="view" hidden>
+  <section aria-labelledby="feel-h">
+    <h2 id="feel-h">Brewing by feel</h2>
+    <p class="sub">The chart is for measuring. These principles are for when you stop. They're my synthesis; where one rests on a source, it says so.</p>
+    <div class="rules">
+      <div>
+        <h3>1. Pick the mode first</h3>
+        <p>Gongfu takes a little from a lot of leaf each pour, over 6–10 small cups. Long steeps take most of what a brew can give from a little leaf, over 2–4 big cups. The Jesse's box brews 1 g per 50 ml for 15 s in the teapot; the national tasting method uses the same ratio for 5 min. Same leaf, twenty times the time: the mode sets the time, not just the ratio. Don't slide between them. In a flask, 30–60 s steeps are where the pour becomes part of the steep.</p>
+      </div>
+      <div>
+        <h3>2. Long steeps: leaf × time stays about constant</h3>
+        <p>Twice the leaf needs a bit under half the time, because leaves give up flavor fastest at the start. Half the leaf needs roughly twice the time. To save leaf, use less and steep longer. For the 500 ml flask, stay between 5 g (longest, most economical) and 10 g (shorter, for sharing).</p>
+      </div>
+      <div>
+        <h3>3. Gongfu: time barely follows the vessel</h3>
+        <p>Doubling the water from the 120 ml gaiwan to the 250 ml teapot adds only 5 s on the Jesse's box (10 s to 15 s). Short steeps are set by how fast the leaf releases flavor, not by the volume.</p>
+      </div>
+      <div>
+        <h3>4. Leaf needs room</h3>
+        <p>Wet whole-leaf white tea is bulky: 5 g often fills a 120 ml gaiwan by the later steeps (general gongfu experience). Extra leaf takes space, holds water back, slows the pour and brews unevenly when packed. Pressed leaf opens over the 2nd and 3rd steeps, so crowding shows up late. That's why the flask stops at 10 g.</p>
+      </div>
+      <div>
+        <h3>5. Change one knob at a time</h3>
+        <p>Thin: steep longer, go hotter (as the Jesse's box says) or add leaf; to save leaf, go longer first. Bitter or drying: go shorter or about 10°F cooler rather than cutting the leaf (general practice).</p>
+      </div>
+      <div>
+        <h3>6. Calibrate, then stop measuring</h3>
+        <p>Use a 5 g cake as your size reference when breaking the bar. Before a steep is up, pour a splash into a white cup; remember the color of steeps you liked, and match the color rather than the clock. Once, measure what each brew yields at 5 g and at 10 g in your own flask.</p>
+      </div>
+    </div>
+  </section>
 
   <section aria-labelledby="calc-h">
     <h2 id="calc-h">How much leaf</h2>
@@ -401,40 +648,9 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
     </div>
   </section>
 
-  <section aria-labelledby="feel-h">
-    <h2 id="feel-h">Brewing by feel</h2>
-    <p class="sub">The chart is for measuring. These principles are for when you stop. They're my synthesis; where one rests on a source, it says so.</p>
-    <div class="rules">
-      <div>
-        <h3>1. Pick the mode first</h3>
-        <p>Gongfu takes a little from a lot of leaf each pour, over 6–10 small cups. Long steeps take most of what a brew can give from a little leaf, over 2–4 big cups. The Jesse's box brews 1 g per 50 ml for 15 s in the teapot; the national tasting method uses the same ratio for 5 min. Same leaf, twenty times the time: the mode sets the time, not just the ratio. Don't slide between them. In a flask, 30–60 s steeps are where the pour becomes part of the steep.</p>
-      </div>
-      <div>
-        <h3>2. Long steeps: leaf × time stays about constant</h3>
-        <p>Twice the leaf needs a bit under half the time, because leaves give up flavor fastest at the start. Half the leaf needs roughly twice the time. To save leaf, use less and steep longer. For the 500 ml flask, stay between 5 g (longest, most economical) and 10 g (shorter, for sharing).</p>
-      </div>
-      <div>
-        <h3>3. Gongfu: time barely follows the vessel</h3>
-        <p>Doubling the water from the 120 ml gaiwan to the 250 ml teapot adds only 5 s on the Jesse's box (10 s to 15 s). Short steeps are set by how fast the leaf releases flavor, not by the volume.</p>
-      </div>
-      <div>
-        <h3>4. Leaf needs room</h3>
-        <p>Wet whole-leaf white tea is bulky: 5 g often fills a 120 ml gaiwan by the later steeps (general gongfu experience). Extra leaf takes space, holds water back, slows the pour and brews unevenly when packed. Pressed leaf opens over the 2nd and 3rd steeps, so crowding shows up late. That's why the flask stops at 10 g.</p>
-      </div>
-      <div>
-        <h3>5. Change one knob at a time</h3>
-        <p>Thin: steep longer, go hotter (as the Jesse's box says) or add leaf; to save leaf, go longer first. Bitter or drying: go shorter or about 10°F cooler rather than cutting the leaf (general practice).</p>
-      </div>
-      <div>
-        <h3>6. Calibrate, then stop measuring</h3>
-        <p>Use a 5 g cake as your size reference when breaking the bar. Before a steep is up, pour a splash into a white cup; remember the color of steeps you liked, and match the color rather than the clock. Once, measure what each brew yields at 5 g and at 10 g in your own flask.</p>
-      </div>
-    </div>
-  </section>
-
   <section>
     <h2>Principles by tea type</h2>
-    <p class="sub">For teas beyond these seven. The Mode filter above switches between the gongfu and long-steep columns. The Basis column says where each row comes from. Tap a row to highlight it; tap it again, or anywhere else, to clear it.</p>
+    <p class="sub">For teas beyond these seven. The Mode filter above switches between the gongfu and long-steep columns. The Basis column says where each row comes from. Tap a row to highlight it and tap it again to clear it; highlights are kept for next time.</p>
     <div class="scroll">
       <table class="ptable" data-cards data-title="0" data-pick>
         <thead>
@@ -646,14 +862,19 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
     </ul>
     <p>Not read: GB/T 22111, the pu-erh product standard. Anything marked "general practice," all teapot times, and the long-steep times are my own synthesis, not from a source. The 1 g per 100 ml long-steep ratio is the caffeine study's ratio, which I've applied to every type.</p>
   </footer>
+  </main>
+</div>
+    </div>
+  </div>
+  <nav class="bottomnav" id="bottom-nav" aria-label="Views"></nav>
 </div>
 
 <script>
 (function(){
   /* view: one mode, then one leaf amount (500 ml flask) or one gongfu vessel */
   var KEY="pressed-tea-guide";
-  var state={mode:"long",vessel:"gaiwan",leaf:"5"};
-  var OK={mode:["long","gongfu"],vessel:["gaiwan","teapot"],leaf:["5","7.5","10"]};
+  var state={tab:"pressed",mode:"long",vessel:"gaiwan",leaf:"5"};
+  var OK={tab:["pressed","loose","guide"],mode:["long","gongfu"],vessel:["gaiwan","teapot"],leaf:["5","7.5","10"]};
   try{
     var s=JSON.parse(localStorage.getItem(KEY)||"null");
     if(!s){
@@ -665,7 +886,7 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
   }catch(e){}
   var app=document.getElementById("app");
   var routine=document.getElementById("routine-sec");
-  var main=document.querySelector("table[data-group]");
+  var main=document.querySelector("#view-pressed table[data-group]");
   var note=document.getElementById("flask-note");
   var NOTE={"5":"one piece, 5–6 g","7.5":"7.5 g, broken off a bar","10":"two 5 g pieces, or 10 g"};
   var SIZE={long:500,gaiwan:120,teapot:250};
@@ -685,10 +906,46 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
     app.classList.toggle("show-gaiwan",!long&&state.vessel==="gaiwan");
     app.classList.toggle("show-teapot",!long&&state.vessel==="teapot");
     routine.style.display=long?"flex":"none";
-    document.querySelectorAll(".fgroup[data-for]").forEach(function(g){g.hidden=g.dataset.for!==state.mode;});
+    document.querySelectorAll(".fgroup[data-for]").forEach(function(g){
+      g.hidden=g.dataset.for!==state.mode||(g.dataset.tabs||state.tab).split(" ").indexOf(state.tab)<0;
+    });
     document.querySelectorAll(".chip").forEach(function(b){b.setAttribute("aria-checked",String(state[b.dataset.set]===b.dataset.val));});
     calc();
   }
+  function save(){try{localStorage.setItem(KEY,JSON.stringify(state));}catch(e){}}
+
+  /* tabs: one row per tab, drawn into both navs (rail on wide screens, bar on phones) */
+  var TABS=[
+    {id:"pressed",label:"Pressed",name:"Pressed Tea Brew Chart"},
+    {id:"loose",label:"Loose leaf",name:"Loose Tea Brew Chart"},
+    {id:"guide",label:"Guide",name:"Tea Brewing Guide"}
+  ];
+  var sideNav=document.getElementById("side-nav"),bottomNav=document.getElementById("bottom-nav");
+  var brandName=document.getElementById("brand-name");
+  function tabBtn(cls,t){
+    var on=state.tab===t.id;
+    return '<button type="button" class="'+cls+(on?" active":"")+'" data-tab="'+t.id+'" aria-current="'+(on?"page":"false")+'">'+
+      '<span class="nav-face"><span class="nav-icon" aria-hidden="true" style="--icon:var(--nv-'+t.id+')"></span>'+t.label+"</span></button>";
+  }
+  function drawNavs(){
+    sideNav.innerHTML='<div class="sidenav-title" aria-hidden="true">茶</div>'+TABS.map(function(t){return tabBtn("nav-item",t);}).join("");
+    bottomNav.innerHTML=TABS.map(function(t){return tabBtn("bn-item",t);}).join("");
+  }
+  function showTab(){
+    TABS.forEach(function(t){document.getElementById("view-"+t.id).hidden=t.id!==state.tab;});
+    brandName.textContent=TABS.filter(function(t){return t.id===state.tab;})[0].name;
+    drawNavs();
+  }
+  [sideNav,bottomNav].forEach(function(nav){
+    nav.addEventListener("click",function(e){
+      var b=e.target.closest?e.target.closest("[data-tab]"):null;
+      if(!b||b.dataset.tab===state.tab)return;
+      state.tab=b.dataset.tab;save();showTab();apply();
+      /* the document doesn't scroll; the pane does */
+      document.getElementById("scroll").scrollTop=0;
+    });
+  });
+
   document.querySelectorAll(".chip").forEach(function(b){
     b.addEventListener("click",function(){
       var k=b.dataset.set,v=b.dataset.val;
@@ -696,7 +953,7 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
       state[k]=v;
       if(k==="leaf"){leaf();if(window.buildCards)window.buildCards(main);}
       else fitVolume();
-      try{localStorage.setItem(KEY,JSON.stringify(state));}catch(e){}
+      save();
       apply();
     });
   });
@@ -729,6 +986,7 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
   [vol,typ].forEach(function(el){el.addEventListener("input",calc);el.addEventListener("change",calc);});
   leaf();
   fitVolume();
+  showTab();
   apply();
 })();
 
@@ -812,26 +1070,39 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
   document.querySelectorAll("table[data-cards]").forEach(build);
 })();
 
-/* principles table: tap a row (or its card on phones) to highlight it; tap anywhere else to clear.
-   Uses click, which a scroll gesture never fires, so scrolling keeps the highlight. */
+/* principles table: press a row (or its card on phones) to highlight it, press it again to clear it.
+   Any number can be on at once, and they are kept across sessions. Keyed by the row's
+   type name rather than its position, so adding a row later doesn't shift the marks. */
 (function(){
   var t=document.querySelector("table[data-pick]");
   if(!t)return;
+  var KEY="tea-principles-marked";
   var rows=[].slice.call(t.tBodies[0].rows);
-  rows.forEach(function(tr,i){tr.dataset.ri=i;tr.tabIndex=0;});
-  function items(){return rows.concat(t._cards?[].slice.call(t._cards.querySelectorAll(".card")):[]);}
-  function select(i){
-    items().forEach(function(n){n.classList.toggle("sel",i!=null&&n.dataset.ri===String(i));});
-    document.documentElement.classList.toggle("has-sel",i!=null);
+  var keys=rows.map(function(tr){return tr.cells[0].textContent.replace(/\s+/g," ").trim();});
+  rows.forEach(function(tr,i){tr.dataset.ri=i;tr.tabIndex=0;tr.setAttribute("aria-pressed","false");});
+  var marked={};
+  try{(JSON.parse(localStorage.getItem(KEY)||"[]")||[]).forEach(function(k){marked[k]=true;});}catch(e){}
+  function paint(){
+    var cards=t._cards?[].slice.call(t._cards.querySelectorAll(".card")):[];
+    rows.concat(cards).forEach(function(n){
+      var on=!!marked[keys[+n.dataset.ri]];
+      n.classList.toggle("sel",on);
+      n.setAttribute("aria-pressed",String(on));
+    });
+  }
+  function toggle(h){
+    var k=keys[+h.dataset.ri];
+    if(marked[k])delete marked[k];else marked[k]=true;
+    try{localStorage.setItem(KEY,JSON.stringify(Object.keys(marked)));}catch(e){}
+    paint();
   }
   function hit(e){return e.target.closest&&e.target.closest("table[data-pick] tbody tr, .pick-cards .card");}
-  function toggle(h){select(h&&!h.classList.contains("sel")?h.dataset.ri:null);}
-  document.addEventListener("click",function(e){toggle(hit(e));});
+  document.addEventListener("click",function(e){var h=hit(e);if(h)toggle(h);});
   document.addEventListener("keydown",function(e){
     var h=hit(e);
     if(h&&(e.key==="Enter"||e.key===" ")){e.preventDefault();toggle(h);}
-    else if(e.key==="Escape")select(null);
   });
+  paint();
 })();
 
 /* offline + install */
