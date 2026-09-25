@@ -30,6 +30,7 @@
   --box:#7a5a12;
   --box-bg:#f6ecd2;
   --hl:#fbefc4;
+  --imp:#6a4b9c;
   --c-moon:#e4ded0;
   --c-peony:#3f8d97;
   --c-jasmine:#8fae4a;
@@ -53,14 +54,14 @@
     color-scheme:dark;
     --bg:#141a17; --surface:#1c2420; --ink:#e6ece8; --muted:#9aaba2;
     --line:#2d3833; --line-strong:#435049; --accent:#7cc2b9; --accent-ink:#0f1a17;
-    --chip:#25302b; --warn:#f0b48c; --box:#e9c77a; --box-bg:#3a3020; --hl:#3d3822;
+    --chip:#25302b; --warn:#f0b48c; --box:#e9c77a; --box-bg:#3a3020; --hl:#3d3822; --imp:#c2a8ee;
   }
 }
 :root[data-theme="dark"]{
   color-scheme:dark;
   --bg:#141a17; --surface:#1c2420; --ink:#e6ece8; --muted:#9aaba2;
   --line:#2d3833; --line-strong:#435049; --accent:#7cc2b9; --accent-ink:#0f1a17;
-  --chip:#25302b; --warn:#f0b48c; --box:#e9c77a; --box-bg:#3a3020; --hl:#3d3822;
+  --chip:#25302b; --warn:#f0b48c; --box:#e9c77a; --box-bg:#3a3020; --hl:#3d3822; --imp:#c2a8ee;
 }
 *{box-sizing:border-box}
 /* The ground is set on the root as well as the body: Chrome on Android tints the
@@ -177,6 +178,15 @@ tbody tr.gstart td,tbody tr.gstart th{border-top:2px solid var(--line-strong)}
 .dot{width:22px;height:22px;border-radius:50%;flex-shrink:0;background:var(--sw);box-shadow:inset 0 0 0 1px rgba(0,0,0,.18)}
 .tn{display:flex;flex-direction:column;line-height:1.3}
 .zh{font-family:var(--serif);font-weight:700;font-size:16px}
+.nm-en{font-weight:600;font-size:14.5px;line-height:1.3}
+.tn .zh,.nm .zh{display:block;font-size:15px}
+.nm .nm-en,.nm .py{display:block}
+.aside{display:block;font-size:12px;color:var(--muted);line-height:1.35;margin-top:2px}
+/* Claude-imputed values: italic in their own colour with a dotted underline */
+.imp{font-style:italic;color:var(--imp);text-decoration:underline dotted;text-underline-offset:3px;text-decoration-thickness:1px}
+.imp small{color:inherit}
+.key{margin:0;font-size:13px;color:var(--muted);max-width:none}
+.key code{font-size:12px}
 .py{font-size:12.5px;color:var(--muted)}
 .tag{font-size:11.5px;font-weight:600;color:var(--accent)}
 .tag.warn{color:var(--warn)}
@@ -261,7 +271,8 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
   .cgroup .zh{font-size:19px;color:var(--ink);letter-spacing:.1em;text-transform:none}
   .card{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px 14px;display:flex;flex-direction:column;gap:10px;font-size:14px}
   .card-t .tea{min-width:0}
-  .card-t .zh{font-size:17px}
+  .card-t .nm-en{font-size:16px}
+  .card-t .zh{font-size:16px}
   .card dl{margin:0}
   .card dd{margin:0}
   .card .num{white-space:normal}
@@ -296,6 +307,7 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
 <div class="wrap" id="app">
   <header>
     <h1 id="brand-name">Pressed Tea Brew Chart</h1>
+    <p class="key"><span class="src">BOX</span> <span class="src">LABEL</span> from the package · plain values from a named source · <span class="imp">values like this are Claude-imputed</span> where no source gives one (method beside each chart and in <code>AUDIT.md</code>) · tap a row to highlight it</p>
   </header>
 
   <div class="filters">
@@ -314,13 +326,12 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
 
   <main id="view-pressed" class="view">
   <section>
-    <p class="sub">Seven pressed teas, one 5 g piece each. Pick the mode and vessel above. Under Steeps, "first" is the first steep and "subsequent" says how to lengthen the rest and how many the leaf gives. Every value is from the box or a named source; the legend and sources below say which.</p>
+    <p class="sub">Seven pressed teas, one 5 g piece each. Pick the mode and vessel above. Under Steeps, "first" is the first steep and "subsequent" says how to lengthen the rest and how many the leaf gives. Every value is from the box, a named source, or Claude-imputed where none exists (styled as in the key); the legend and sources below say which.</p>
     <div class="scroll">
-      <table data-cards data-title="2" data-group="0" data-pick id="pressed-table">
+      <table data-cards data-title="1" data-group="0" data-pick id="pressed-table">
         <thead>
           <tr>
             <th rowspan="3">Type</th>
-            <th rowspan="3" class="v-flask">Caffeine<small class="hsub">1st flask brew</small></th>
             <th rowspan="3">Tea</th>
             <th rowspan="3">Temp</th>
             <th rowspan="3">Wash</th>
@@ -343,37 +354,35 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
           <!-- WHITE -->
           <tr class="gstart">
             <th class="cat" rowspan="3" scope="rowgroup"><span class="v" lang="zh">白茶</span><span class="en">báichá</span><span class="en">White</span></th>
-            <td class="num v-flask">~42 <small>mg</small></td>
-            <td><div class="tea" style="--sw:var(--c-moon)"><span class="dot"></span><span class="tn"><span class="zh" lang="zh">月光白</span><span class="py">yuèguāng bái · Moonlight White bar</span></span></div></td>
+            <td><div class="tea" style="--sw:var(--c-moon)"><span class="dot"></span><span class="tn"><span class="nm-en">Moonlight White bar</span><span class="zh" lang="zh">月光白</span><span class="py">yuèguāng bái</span></span></div></td>
             <td class="num">185°F<span class="src">BOX</span><br><small>212°F if thin</small><span class="src">BOX</span></td>
             <td class="num">3 s<span class="src">BOX</span></td>
             <td class="num v-flask vs">3–4 min</td>
-            <td class="num v-flask">Not in sources</td>
+            <td class="num v-flask">Longer each time<br><small>3–4 brews</small></td>
             <td class="num v-gaiwan vs">10 s<span class="src">BOX</span></td>
             <td class="num v-gaiwan">Longer each time<br><small>10 steeps</small><span class="src">BOX</span></td>
             <td class="num v-teapot vs">15 s<span class="src">BOX</span></td>
             <td class="num v-teapot">10 s ×2, then 20 s, 30 s<br><small>5 steeps</small></td>
           </tr>
           <tr>
-            <td class="num v-flask">~44 <small>mg</small></td>
-            <td><div class="tea" style="--sw:var(--c-peony)"><span class="dot"></span><span class="tn"><span class="zh" lang="zh">白牡丹</span><span class="py">bái mǔdān · White Peony</span></span></div></td>
+            <td><div class="tea" style="--sw:var(--c-peony)"><span class="dot"></span><span class="tn"><span class="nm-en">White Peony</span><span class="zh" lang="zh">白牡丹</span><span class="py">bái mǔdān</span></span></div></td>
             <td class="num"><span class="ml">194°F</span><span class="ms">194–212°F</span></td>
-            <td class="num">Not in sources</td>
+            <td class="num"><span class="imp">3 s</span></td>
             <td class="num v-flask vs">3–4 min</td>
-            <td class="num v-flask">Not in sources</td>
+            <td class="num v-flask">Longer each time<br><small>3–4 brews</small></td>
             <td class="num v-gaiwan vs">20 s</td>
-            <td class="num v-gaiwan">Longer each time<br><small>count not in sources</small></td>
+            <td class="num v-gaiwan">Longer each time<br><span class="imp"><small>5–10 steeps</small></span></td>
             <td class="num v-teapot vs">10 s</td>
             <td class="num v-teapot">10 s ×2, then 20 s, 30 s<br><small>5 steeps</small></td>
           </tr>
           <tr>
-            <td class="num v-flask">~42 <small>mg</small></td>
-            <td><div class="tea" style="--sw:var(--c-jasmine)"><span class="dot"></span><span class="tn"><span class="zh" lang="zh">茉莉白茶</span><span class="py">mòlì bái chá · Jasmine white</span></span></div></td>
+            <td><div class="tea" style="--sw:var(--c-jasmine)"><span class="dot"></span><span class="tn"><span class="nm-en">Jasmine white</span><span class="zh" lang="zh">茉莉白茶</span><span class="py">mòlì bái chá</span></span></div></td>
             <td class="num"><span class="ml">175–195°F</span><span class="ms">203°F<br><small>212°F from the 4th</small></span></td>
-            <td class="num">Not in sources</td>
+            <td class="num"><span class="imp">3 s</span></td>
             <td class="num v-flask vs">3–4 min</td>
-            <td class="num v-flask">Not in sources</td>
-            <td class="num v-gaiwan vs" colspan="2">Not in sources at this leaf ratio</td>
+            <td class="num v-flask">Longer each time<br><small>3 brews</small></td>
+            <td class="num v-gaiwan vs"><span class="imp">20 s</span></td>
+            <td class="num v-gaiwan"><span class="imp">Longer each time<br><small>5 steeps</small></span></td>
             <td class="num v-teapot vs">10 s</td>
             <td class="num v-teapot">10 s ×2, then 20 s, 30 s<br><small>5 steeps</small></td>
           </tr>
@@ -381,25 +390,24 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
           <!-- BLACK -->
           <tr class="gstart">
             <th class="cat" rowspan="2" scope="rowgroup"><span class="v" lang="zh">红茶</span><span class="en">hóngchá</span><span class="en">Black</span></th>
-            <td class="num v-flask" rowspan="2">~49 <small>mg</small></td>
-            <td><div class="tea" style="--sw:var(--c-lily)"><span class="dot"></span><span class="tn"><span class="zh" lang="zh">百合红茶</span><span class="py">bǎihé hóngchá · Lily black</span></span></div></td>
+            <td><div class="tea" style="--sw:var(--c-lily)"><span class="dot"></span><span class="tn"><span class="nm-en">Lily black</span><span class="zh" lang="zh">百合红茶</span><span class="py">bǎihé hóngchá</span></span></div></td>
             <td class="num" rowspan="2"><span class="ml">205°F</span><span class="ms">203°F<br><small>212°F on the 5th</small></span></td>
             <td class="num" rowspan="2">None<br><small>skim foam off the 1st</small></td>
             <td class="num v-flask vs" rowspan="2">3–4 min</td>
             <td class="num v-flask" rowspan="2">Longer each time<br><small>3–5 brews</small></td>
             <td class="num v-gaiwan vs" rowspan="2">10 s</td>
             <td class="num v-gaiwan" rowspan="2">10 s ×3, then 15 s<br><small>5 steeps</small></td>
-            <td class="num v-teapot vs" rowspan="2" colspan="2">Not in sources at this leaf ratio</td>
+            <td class="num v-teapot vs" rowspan="2"><span class="imp">15 s</span></td>
+            <td class="num v-teapot" rowspan="2"><span class="imp">15 s ×3, then 20 s<br><small>5 steeps</small></span></td>
           </tr>
           <tr>
-            <td><div class="tea" style="--sw:var(--c-rose)"><span class="dot"></span><span class="tn"><span class="zh" lang="zh">甜蜜蜜 玫瑰红茶</span><span class="py">tiánmìmì méiguī hóngchá · Rose black</span></span></div></td>
+            <td><div class="tea" style="--sw:var(--c-rose)"><span class="dot"></span><span class="tn"><span class="nm-en">Rose black</span><span class="zh" lang="zh">甜蜜蜜 玫瑰红茶</span><span class="py">tiánmìmì méiguī hóngchá</span></span></div></td>
           </tr>
 
           <!-- PU-ERH -->
           <tr class="gstart">
             <th class="cat" rowspan="3" scope="rowgroup"><span class="v" lang="zh">普洱</span><span class="en">pǔ'ěr</span><span class="en">Pu-erh</span></th>
-            <td class="num v-flask" rowspan="2">~53 <small>mg</small></td>
-            <td><div class="tea" style="--sw:var(--c-nuomi)"><span class="dot"></span><span class="tn"><span class="zh" lang="zh">糯米香 熟茶</span><span class="py">nuòmǐ xiāng shú chá · Sticky-rice ripe</span></span></div></td>
+            <td><div class="tea" style="--sw:var(--c-nuomi)"><span class="dot"></span><span class="tn"><span class="nm-en">Sticky-rice ripe</span><span class="zh" lang="zh">糯米香 熟茶</span><span class="py">nuòmǐ xiāng shú chá</span><span class="aside">(caffeine ~53 mg a flask)</span></span></div></td>
             <td class="num" rowspan="2"><span class="ml">205°F</span><span class="ms">212°F</span></td>
             <td class="num" rowspan="2">Rinse twice<br><small>about 15 s each</small></td>
             <td class="num v-flask vs" rowspan="2">3 min</td>
@@ -410,11 +418,10 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
             <td class="num v-teapot" rowspan="2">10 s ×3, then 15 s ×3<br><small>7 steeps</small></td>
           </tr>
           <tr>
-            <td><div class="tea" style="--sw:var(--c-bingdao)"><span class="dot"></span><span class="tn"><span class="zh" lang="zh">冰岛 · if ripe</span><span class="py">Bīngdǎo · dark brown leaves</span></span></div></td>
+            <td><div class="tea" style="--sw:var(--c-bingdao)"><span class="dot"></span><span class="tn"><span class="nm-en">Bingdao, if ripe</span><span class="zh" lang="zh">冰岛</span><span class="py">bīngdǎo</span><span class="aside">dark brown leaves (caffeine ~53 mg a flask)</span></span></div></td>
           </tr>
           <tr>
-            <td class="num v-flask">~49 <small>mg</small></td>
-            <td><div class="tea" style="--sw:var(--c-bingdao)"><span class="dot"></span><span class="tn"><span class="zh" lang="zh">冰岛 · if raw</span><span class="py">Bīngdǎo · olive-green leaves</span></span></div></td>
+            <td><div class="tea" style="--sw:var(--c-bingdao)"><span class="dot"></span><span class="tn"><span class="nm-en">Bingdao, if raw</span><span class="zh" lang="zh">冰岛</span><span class="py">bīngdǎo</span><span class="aside">olive-green leaves</span></span></div></td>
             <td class="num"><span class="ml">195°F</span><span class="ms">212°F</span></td>
             <td class="num">Rinse once<br><small>about 20 s</small></td>
             <td class="num v-flask vs">3 min</td>
@@ -427,16 +434,17 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
         </tbody>
       </table>
     </div>
-    <p class="legend"><span class="src">BOX</span> is from the Jesse's Teahouse 月光白 box, as transcribed from your photo in the earlier chat; the photo isn't in this repo, so send it again to re-check those values. How a source is chosen, in order: the tea's own package; then a source for that specific tea; then a source for its type that brews closest to the vessel's leaf-to-water ratio (the flask is 1:100, the gaiwan 1:24, the teapot 1:50). A source more than 1.5 times off that ratio isn't used, and the cell says so. Strain every flask brew: tea kept hot on its leaves turns more bitter (Kexin 2018). Caffeine is derived: the caffeine study's per-200 ml value for that tea type, interpolated to the flask's first-steep temperature and time, ×2.5 for 500 ml; its 2 g in 200 ml is the flask's 1 g per 100 ml.</p>
+    <p class="legend"><span class="src">BOX</span> is from the Jesse's Teahouse 月光白 box, as transcribed from your photo in the earlier chat; the photo isn't in this repo, so send it again to re-check those values. How a source is chosen, in order: the tea's own package; then a source for that specific tea; then a source for its type that brews closest to the vessel's leaf-to-water ratio (the flask is 1:100, the gaiwan 1:24, the teapot 1:50). A source more than 1.5 times off that ratio isn't used. Where no source fits, the value is Claude-imputed and shown in the imputed style; the "Imputed" line below gives the method. Strain every flask brew: tea kept hot on its leaves turns more bitter (Kexin 2018). Caffeine: every first flask brew here works out at about 40–50 mg (derived from the caffeine study; working below), except where a tea says otherwise under its name.</p>
     <p class="legend">There is no 7.5 or 10 g flask setting any more. No source gives long-steep times for more leaf; the two that use more (ISO 3103 and GB/T 23776, both 1 g per 50 ml) steep longer, 5–6 min, because they are tasting methods.</p>
     <table class="basis-table">
       <tbody>
-        <tr><th>White flask</th><td>Curious Tea: moonlight white cake and white peony cake, "2.5g in 250ml water at 90°C for 3-4 minutes". Saratoga Tea &amp; Honey: scented white, 5 g to 16 oz at 175–195°F, 3–4 min. Neither gives later steeps.</td></tr>
+        <tr><th>White flask</th><td>Curious Tea: moonlight white cake and white peony cake, "2.5g in 250ml water at 90°C for 3-4 minutes". Saratoga Tea &amp; Honey: scented white, 5 g to 16 oz at 175–195°F, 3–4 min. Later steeps from A Thirst for Tea: white peony, "Increase the time and temperature slightly with each subsequent infusion", 3–4 infusions; jasmine, 3 infusions (both at 2.5–3 g per 6 oz, within 1.5 times of the flask's ratio).</td></tr>
         <tr><th>White gaiwan</th><td>Curious Tea gongfu: moonlight 5 g per 100 ml, peony 3 g per 100 ml, 90–95°C, 20 s first, "increasing the time with each subsequent steep". The Chayu guide's white and scented methods are 1:50, over twice the gaiwan's leaf ratio, so they aren't used here.</td></tr>
+        <tr><th>Imputed</th><td><span class="imp">Claude-imputed</span>, each from the nearest sourced value: the moonlight box's 3 s wash for the other two pressed whites; 5–10 gaiwan steeps for peony, between the Chayu guide's 5 and the box's 10; jasmine white in the gaiwan as Curious Tea's white gongfu (20 s, longer each time) with the Chayu scented count of 5; black in the teapot as the Chayu black method stretched by the box's own gaiwan-to-teapot step for the same piece (10 s to 15 s, ×1.5).</td></tr>
         <tr><th>White teapot</th><td>Chayu guide, white and scented at 1:50 (the teapot's ratio): 95°C 10 s for three steeps, then 100°C 20 s and 30 s; 5 steeps. For the moonlight bar the box's 15 s replaces the first.</td></tr>
         <tr><th>Black</th><td>Flask: Saratoga, 5 g per 12–16 oz at 205°F, 3–4 min, "Re-steep your leaves 2-4 times... for increasing intervals". Gaiwan: Chayu guide at 1:30, 95°C 10 s for four steeps, then 100°C 15 s; usually 5. Foam skim: T/CSTEA 00050-2022 (not re-read in this audit; its link is down). Teapot: Chayu's black ratios are 1:30 and, for broken leaf, 1:50 with one steep, so neither fits a whole-leaf 1:50 pot.</td></tr>
         <tr><th>Pu-erh</th><td>Flask: Saratoga, 5 g to 16 oz; ripe 205°F, raw 195°F; 3 min; resteeps +15–20 s (ripe) or +15–30 s (raw); "Expect 6-8 infusions". Smith Teamaker gives ripe 5 min at 212°F and raw 3 min at 190°F, at 1 tsp per 8–10 oz. Gaiwan and teapot: Chayu guide, all at 100°C; ripe 5 s, then 10 s ×3, 15 s ×3, 7 steeps, and a clay pot suits it; raw (pressed) 10 s, 5 s ×3, 20 s ×3, 40 s ×2, 60 s, "usually 7". Chayu gives no pu-erh ratio. Rinses: Yunnan Sourcing, raw once for about 20 s, ripe twice for about 15 s.</td></tr>
-        <tr><th>Caffeine</th><td>Ayakdaş &amp; Ağagündüz 2025, Table 2, mg per 200 ml: white 80°C 5.8 (2 min), 26 (5 min); 100°C 16, 22. Black 80°C 14, 23; 100°C 17, 23. Pu-erh 80°C 13, 25; 100°C 19, 28. Worked at: moonlight 85°C 3½ min; peony 90°C 3½ min; jasmine white 85°C 3½ min; black 96°C 3½ min; ripe 96°C 3 min; raw 90.5°C 3 min.</td></tr>
+        <tr><th>Caffeine</th><td>First flask brews: moonlight ~42, peony ~44, jasmine white ~42, black ~49, raw ~49, ripe ~53 mg. Ayakdaş &amp; Ağagündüz 2025, Table 2, mg per 200 ml: white 80°C 5.8 (2 min), 26 (5 min); 100°C 16, 22. Black 80°C 14, 23; 100°C 17, 23. Pu-erh 80°C 13, 25; 100°C 19, 28. Worked at: moonlight 85°C 3½ min; peony 90°C 3½ min; jasmine white 85°C 3½ min; black 96°C 3½ min; ripe 96°C 3 min; raw 90.5°C 3 min.</td></tr>
       </tbody>
     </table>
   </section>
@@ -444,13 +452,12 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
 
   <main id="view-loose" class="view" hidden>
     <section>
-      <p class="sub">Loose teas and herbals on hand. Every value is from the package (<span class="src">LABEL</span>) or from a source named in the Basis column; figures marked derived are worked out from those. Long steeps are for the 500 ml flask; Gongfu shows a short method only where a source gives one. Tap a row to highlight it; tap again to clear.</p>
+      <p class="sub">Loose teas and herbals on hand. Every value is from the package (<span class="src">LABEL</span>), a source named in the Basis column, or Claude-imputed where none exists (styled as in the key); figures marked derived are worked out from sources. Long steeps are for the 500 ml flask; Gongfu shows a short method only where a source gives one. Tap a row to highlight it; tap again to clear.</p>
       <div class="scroll">
-        <table data-cards data-title="2" data-group="0" data-pick id="loose-table">
+        <table data-cards data-title="1" data-group="0" data-pick id="loose-table">
           <thead>
             <tr>
               <th rowspan="3">Type</th>
-              <th rowspan="3" class="v-long">Caffeine<small class="hsub">1st flask brew</small></th>
               <th rowspan="3">Tea</th>
               <th rowspan="3">Temp</th>
               <th class="grp v-long vs" colspan="3">500 ml flask<small>long steeps</small></th>
@@ -471,8 +478,7 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
             <!-- GREEN -->
             <tr class="gstart">
               <th class="cat" rowspan="2" scope="rowgroup"><span class="v" lang="zh">绿茶</span><span class="en">lǜchá</span><span class="en">Green</span></th>
-              <td class="num v-long">~28 <small>mg, derived</small></td>
-              <td><div class="tea" style="--sw:var(--c-longjing)"><span class="dot"></span><span class="tn"><span class="zh" lang="zh">龙井茶</span><span class="py">lóngjǐng chá · Dragon Well, Gan Chun tin and bag</span><span class="tag warn">Strain in the flask</span></span></div></td>
+              <td><div class="tea" style="--sw:var(--c-longjing)"><span class="dot"></span><span class="tn"><span class="nm-en">Longjing (Dragon Well)</span><span class="zh" lang="zh">龙井茶</span><span class="py">lóngjǐng chá</span><span class="aside">Gan Chun tin and bag (caffeine ~28 mg a flask)</span><span class="tag warn">Strain in the flask</span></span></div></td>
               <td class="num">176°F<br><small>167–185°F in Jiemian</small></td>
               <td class="num v-long vs">5 g <small>1 g per 100 ml</small></td>
               <td class="num v-long">2 min</td>
@@ -484,33 +490,30 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
               <td class="basis">China Tea Museum 2020: West Lake Longjing in a glass, 3 g per 150 ml (1:50), about 80°C, top up when ⅓ remains; green tea is weak by the 3rd infusion. Jiemian 2017: 75–85°C, 1:50–60. Neither gives a long steep, so the flask follows Saratoga's green tea: 5 g to 16 oz, 175°F for Chinese green, 2 min, re-steep 2–3 times at increasing intervals. SAMR standards portal: GB/T 22292 is Jasmine tea. Strain: tea kept hot on its leaves turns more bitter (Kexin 2018). Caffeine: Ayakdaş 2025, green at 80°C for 2 min (11 mg per 200 ml), ×2.5.</td>
             </tr>
             <tr>
-              <td class="num v-long">Not on label</td>
-              <td><div class="tea" style="--sw:var(--c-ginger)"><span class="dot"></span><span class="tn"><span class="zh">Ginger &amp; Turmeric Green Tea</span><span class="py">Mauna Kea Tea, Hawaiʻi · green tea, ginger, coconut, cinnamon, turmeric, black pepper</span></span></div></td>
+              <td><div class="tea" style="--sw:var(--c-ginger)"><span class="dot"></span><span class="tn"><span class="nm-en">Ginger &amp; Turmeric Green Tea</span><span class="aside">Mauna Kea Tea, Hawaiʻi · green tea, ginger, coconut, cinnamon, turmeric, black pepper</span></span></div></td>
               <td class="num">212°F<span class="src">LABEL</span></td>
               <td class="num v-long vs">2 tsp <small>label: 1 tsp per 8 oz</small></td>
               <td class="num v-long">2–5 min<span class="src">LABEL</span></td>
-              <td class="num v-long">Label gives one steep</td>
+              <td class="num v-long"><span class="imp">Longer each time<br><small>2–3 brews</small></span></td>
               <td class="num v-short vs" colspan="3">Long steeps only: its label gives no short method</td>
               <td class="note">Boiling water is the label's own instruction; Saratoga and Harney brew plain Chinese green tea at 175°F.</td>
-              <td class="basis">Label: 1 tsp in 8 oz boiling water for 2–5 min; ingredients as listed. 2 tsp: 500 ml ÷ 236.6 ml (a US cup, 8 fl oz) = 2.1.</td>
+              <td class="basis">Label: 1 tsp in 8 oz boiling water for 2–5 min; ingredients as listed. 2 tsp: 500 ml ÷ 236.6 ml (a US cup, 8 fl oz) = 2.1. Imputed resteeps: Saratoga re-steeps green tea 2–3 times at increasing intervals.</td>
             </tr>
 
             <!-- BLACK -->
             <tr class="gstart">
               <th class="cat" rowspan="2" scope="rowgroup"><span class="v" lang="zh">红茶</span><span class="en">hóngchá</span><span class="en">Black</span></th>
-              <td class="num v-long">~50 <small>mg per cup</small><span class="src">LABEL</span></td>
-              <td><div class="tea" style="--sw:var(--c-eb)"><span class="dot"></span><span class="tn"><span class="zh">Special English Breakfast</span><span class="py">Harney &amp; Sons · black tea blend</span><span class="tag warn">Remove the leaves</span></span></div></td>
+              <td><div class="tea" style="--sw:var(--c-eb)"><span class="dot"></span><span class="tn"><span class="nm-en">Special English Breakfast</span><span class="aside">Harney &amp; Sons · black tea blend (caffeine ~50 mg a cup by the label, about 105 mg a flask)</span><span class="tag warn">Remove the leaves</span></span></div></td>
               <td class="num">212°F<span class="src">LABEL</span></td>
               <td class="num v-long vs">2 tsp <small>if a cup is 8 oz</small></td>
               <td class="num v-long">4–5 min<span class="src">LABEL</span></td>
-              <td class="num v-long">Label gives one steep</td>
+              <td class="num v-long"><span class="imp">Longer each time<br><small>2 brews</small></span></td>
               <td class="num v-short vs" colspan="3">Long steeps only: its label gives no short method</td>
               <td class="note">Harney doesn't define its cup, on the tin or in its brewing guide. At 8 oz, 500 ml is 2.1 cups, so about 105 mg a flask by the label's figure. That's nearly twice what the caffeine study's black teas give for 5 g in 500 ml at 5 min (~58 mg, derived).</td>
-              <td class="basis">Label: filtered water, 1 tsp per cup, 212°F, 4–5 min, remove the leaves; caffeine 40–60 mg (midpoint shown). Harney black tea guide: 1 tsp per cup, boiling, 4–5 min; no cup size given. Study figure: Ayakdaş 2025, black at 100°C for 5 min, ×2.5.</td>
+              <td class="basis">Label: filtered water, 1 tsp per cup, 212°F, 4–5 min, remove the leaves; caffeine 40–60 mg (midpoint under the name). Harney black tea guide: 1 tsp per cup, boiling, 4–5 min; no cup size given. Study figure: Ayakdaş 2025, black at 100°C for 5 min, ×2.5. Imputed resteep: between Saratoga's 2–4 re-steeps for black tea and the Chayu guide's one steep for broken black tea.</td>
             </tr>
             <tr>
-              <td class="num v-long">~44 <small>mg, derived</small></td>
-              <td><div class="tea" style="--sw:var(--c-earl)"><span class="dot"></span><span class="tn"><span class="zh">Earl Grey</span><span class="py">brand unknown · black tea with bergamot oil</span><span class="tag warn">Tin mislabelled Heicha</span></span></div></td>
+              <td><div class="tea" style="--sw:var(--c-earl)"><span class="dot"></span><span class="tn"><span class="nm-en">Earl Grey</span><span class="aside">brand unknown · black tea with bergamot oil</span><span class="tag warn">Tin mislabelled Heicha</span></span></div></td>
               <td class="num">205°F</td>
               <td class="num v-long vs">5 g <small>1 g per 100 ml</small></td>
               <td class="num v-long">2–3 min</td>
@@ -523,33 +526,30 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
             <!-- HERBAL -->
             <tr class="gstart">
               <th class="cat" rowspan="2" scope="rowgroup"><span class="v" lang="zh">草本</span><span class="en">cǎoběn</span><span class="en">Herbal</span></th>
-              <td class="num v-long">0 <small>mg</small></td>
-              <td><div class="tea" style="--sw:var(--c-rooibos)"><span class="dot"></span><span class="tn"><span class="zh">Premium Rooibos</span><span class="py">Zen's Tea House · South African red bush</span><span class="tag">No caffeine</span></span></div></td>
+              <td><div class="tea" style="--sw:var(--c-rooibos)"><span class="dot"></span><span class="tn"><span class="nm-en">Premium Rooibos</span><span class="aside">Zen's Tea House · South African red bush (no caffeine)</span></span></div></td>
               <td class="num">212°F<span class="src">LABEL</span></td>
               <td class="num v-long vs">2 tsp <small>label: 1 tsp per 8 oz</small></td>
               <td class="num v-long">5–7 min<span class="src">LABEL</span><br><small>10 min is fine</small></td>
-              <td class="num v-long">Not in sources<br><small>label gives one steep</small></td>
+              <td class="num v-long"><span class="imp">Longer each time<br><small>2–3 brews</small></span></td>
               <td class="num v-short vs" colspan="3">Long steeps only: its label gives no short method</td>
               <td class="note">The SA Rooibos Council's chemist recommends boiling water and 10 min for the most antioxidants. Rooibos has fewer tannins than tea, so it's less astringent.</td>
-              <td class="basis">Label: 1 tsp per 8 oz, 212°F, 5–7 min. SA Rooibos Council (Francl, 2025): boiling water and 10 min; fewer tannins, less astringent; naturally caffeine-free. 2 tsp: 500 ml ÷ 236.6 ml = 2.1.</td>
+              <td class="basis">Label: 1 tsp per 8 oz, 212°F, 5–7 min. SA Rooibos Council (Francl, 2025): boiling water and 10 min; fewer tannins, less astringent; naturally caffeine-free. 2 tsp: 500 ml ÷ 236.6 ml = 2.1. Imputed resteeps: its low tannin means a longer second steep won't turn harsh, by the Council's account of rooibos's tannins.</td>
             </tr>
             <tr>
-              <td class="num v-long">Not stated</td>
-              <td><div class="tea" style="--sw:var(--c-goji)"><span class="dot"></span><span class="tn"><span class="zh" lang="zh">黑枸杞</span><span class="py">hēi gǒuqǐ · Qinghai black goji (Lycium ruthenicum), 川知味 Szechuan Flavor</span><span class="tag warn">Never boiling</span></span></div></td>
+              <td><div class="tea" style="--sw:var(--c-goji)"><span class="dot"></span><span class="tn"><span class="nm-en">Black goji</span><span class="zh" lang="zh">黑枸杞</span><span class="py">hēi gǒuqǐ</span><span class="aside">Qinghai, <i>Lycium ruthenicum</i>; 川知味 Szechuan Flavor</span><span class="tag warn">Never boiling</span></span></div></td>
               <td class="num">68–176°F</td>
               <td class="num v-long vs">~2.5 g <small>2 g per 400 ml</small></td>
-              <td class="num v-long">A short rest <small lang="zh">静置片刻</small></td>
-              <td class="num v-long">Not in sources</td>
+              <td class="num v-long">A short rest <small lang="zh">静置片刻</small><br><span class="imp"><small>about 3–5 min</small></span></td>
+              <td class="num v-long"><span class="imp">Refill until the colour fades<br><small>2–3 brews</small></span></td>
               <td class="num v-short vs" colspan="3">Long steeps only: no short method in these sources</td>
               <td class="note">Dried berries, not tea; the jar gives no instructions. Water hotter than 80°C (176°F) destroys the anthocyanins that colour it. The colour follows the water's pH: purple near neutral, bluer as the water gets more alkaline.</td>
-              <td class="basis">Wang Lixia, chief pharmacist, Guang'anmen Hospital, China Academy of Chinese Medical Sciences (dayi.org.cn, 2025): 400 ml of water at 20–80°C, about 2 g, rest briefly; too hot destroys the anthocyanins. Deng et al., <i>Molecules</i> 2022: anthocyanins are red at pH 1–2, purple at 6–7, bluer with more alkalinity. Jar: 草本花茶系列 (herbal flower-tea series), 130 g<span class="src">LABEL</span>. ~2.5 g: 2 g × 500 ÷ 400.</td>
+              <td class="basis">Wang Lixia, chief pharmacist, Guang'anmen Hospital, China Academy of Chinese Medical Sciences (dayi.org.cn, 2025): 400 ml of water at 20–80°C, about 2 g, rest briefly; too hot destroys the anthocyanins. Deng et al., <i>Molecules</i> 2022: anthocyanins are red at pH 1–2, purple at 6–7, bluer with more alkalinity. Jar: 草本花茶系列 (herbal flower-tea series), 130 g<span class="src">LABEL</span>. ~2.5 g: 2 g × 500 ÷ 400. Imputed: 3–5 min and 2–3 refills until the colour fades, as popular health guides give (Baidu Health, not an authoritative source).</td>
             </tr>
 
             <!-- UNKNOWN -->
             <tr class="gstart">
               <th class="cat" scope="rowgroup"><span class="v" lang="zh">？</span><span class="en">Unknown</span></th>
-              <td class="num v-long">Unknown</td>
-              <td><div class="tea" style="--sw:var(--c-mystery)"><span class="dot"></span><span class="tn"><span class="zh">Mystery tea</span><span class="py">unlabelled or relabelled</span><span class="tag">Taste, then adjust</span></span></div></td>
+              <td><div class="tea" style="--sw:var(--c-mystery)"><span class="dot"></span><span class="tn"><span class="nm-en">Mystery tea</span><span class="aside">unlabelled or relabelled</span><span class="tag">Taste, then adjust</span></span></div></td>
               <td class="num">175°F <small>to start</small></td>
               <td class="num v-long vs">5 g <small>1 g per 100 ml</small></td>
               <td class="num v-long">2 min</td>
@@ -561,7 +561,7 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
           </tbody>
         </table>
       </div>
-      <p class="legend"><span class="src">LABEL</span> is from that product's own package. "Not in sources" means no source here gives a value, so none is guessed. 2 tsp for 500 ml is 500 ml ÷ 236.6 ml, a US cup of 8 fl oz, = 2.1; a teaspoon's weight varies by leaf, so weigh one level teaspoon of each once to compare with the gram rows. Caffeine is a midpoint. Derived caffeine is the caffeine study's per-200 ml value at the stated water temperature, interpolated to the steep time and ×2.5 for 500 ml (its 2 g in 200 ml is this chart's 1 g per 100 ml).</p>
+      <p class="legend"><span class="src">LABEL</span> is from that product's own package. Values in the imputed style are Claude-imputed; see the key at the top and the Basis column. 2 tsp for 500 ml is 500 ml ÷ 236.6 ml, a US cup of 8 fl oz, = 2.1; a teaspoon's weight varies by leaf, so weigh one level teaspoon of each once to compare with the gram rows. Caffeine: a first flask brew works out at about 40–50 mg, derived from the caffeine study (its per-200 ml value at the stated temperature, interpolated to the steep time, ×2.5 for 500 ml); teas outside that range say so under their name.</p>
     </section>
 
     <footer class="sources">
@@ -675,9 +675,9 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
         </thead>
         <tbody>
           <tr>
-            <td class="nm"><span class="zh" lang="zh">绿茶 · 黄茶</span><br><span class="py">lǜchá · huángchá</span><br>Green · Yellow</td>
+            <td class="nm"><span class="nm-en">Green · Yellow</span><span class="zh" lang="zh">绿茶 · 黄茶</span><span class="py">lǜchá · huángchá</span></td>
             <td class="num"><span class="ml">175°F</span><span class="ms">194°F<br><small>up to 203–212°F</small></span></td>
-            <td>Not in sources</td>
+            <td><span class="imp">None</span></td>
             <td class="num v-short vs">2 g</td>
             <td class="num v-short">10–15 s</td>
             <td class="num v-short">20, 30, 40 s<br><small>about 4 steeps</small></td>
@@ -687,7 +687,7 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
             <td class="basis">Chayu guide: 1:50; first steep 90°C, rising to 95–100°C; semi-curled leaf 10, 20, 30, 40 s, curled 15, 20, 30, 40 s; about 4 steeps; yellow tea is brewed the same. Saratoga: 5 g to 16 oz, 175°F for Chinese green, 2 min, re-steep 2–3 times at increasing intervals.</td>
           </tr>
           <tr>
-            <td class="nm"><span class="zh" lang="zh">白茶</span> <span class="py">báichá</span><br>White, fresh or pressed</td>
+            <td class="nm"><span class="nm-en">White, fresh or pressed</span><span class="zh" lang="zh">白茶</span><span class="py">báichá</span></td>
             <td class="num"><span class="ml">185–194°F</span><span class="ms">203°F<br><small>212°F from the 4th</small></span></td>
             <td>Pressed moonlight: 3 s<span class="src">BOX</span></td>
             <td class="num v-short vs">2–5 g</td>
@@ -695,33 +695,35 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
             <td class="num v-short">10 s ×2, then 20 s, 30 s<br><small>5 steeps</small></td>
             <td class="num v-long vs">1–1.06 g</td>
             <td class="num v-long">3–4 min</td>
-            <td class="num v-long">Not in sources</td>
-            <td class="basis">Chayu guide: 1:50, 95°C 10 s for three steeps, then 100°C 20 s and 30 s; 5 steeps; loose and cakes brewed alike. Curious Tea (moonlight and peony cakes): gongfu 3–5 g per 100 ml, 90–95°C, 20 s, longer each time; long 2.5 g in 250 ml, 90°C, 3–4 min. Saratoga: white peony 5 g to 16 oz, 185°F, 3 min; silver needle 5–7 min.</td>
+            <td class="num v-long">Longer each time<br><small>3–4 brews</small></td>
+            <td class="basis">Chayu guide: 1:50, 95°C 10 s for three steeps, then 100°C 20 s and 30 s; 5 steeps; loose and cakes brewed alike. Curious Tea (moonlight and peony cakes): gongfu 3–5 g per 100 ml, 90–95°C, 20 s, longer each time; long 2.5 g in 250 ml, 90°C, 3–4 min. Saratoga: white peony 5 g to 16 oz, 185°F, 3 min; silver needle 5–7 min. A Thirst for Tea, white peony long steep: 2.5–3 g per 6 oz, near boiling, 2–3 min, "Increase the time and temperature slightly with each subsequent infusion", 3–4 infusions.</td>
           </tr>
           <tr>
-            <td class="nm"><span class="zh" lang="zh">老白茶</span> <span class="py">lǎo báichá</span><br>White, aged</td>
+            <td class="nm"><span class="nm-en">White, aged</span><span class="zh" lang="zh">老白茶</span><span class="py">lǎo báichá</span></td>
             <td class="num">203–212°F</td>
             <td>Optional: quick wet, rest 5–10 min</td>
             <td class="num v-short vs">3.6–5.6 g</td>
             <td class="num v-short">15–40 s</td>
             <td class="num v-short">+10–30 s each, up to 60–120 s<br><small>6–9 steeps</small></td>
-            <td class="num v-long vs" colspan="3">Not in sources</td>
-            <td class="basis">T/MCYX 012-2024, aged white brewing guide: 1:18–1:28; 95–100°C; optional warm rinse and 5–10 min rest; steeps 1–3 at 15–40 s, later 60–120 s, adding 10–30 s; 6–9 steeps by style. Checked against quotes in the earlier chat; not re-read in this audit (its link is down).</td>
+            <td class="num v-long vs"><span class="imp">1 g</span></td>
+            <td class="num v-long"><span class="imp">3–4 min</span></td>
+            <td class="num v-long"><span class="imp">Longer each time<br><small>3–4 brews</small></span></td>
+            <td class="basis">T/MCYX 012-2024, aged white brewing guide: 1:18–1:28; 95–100°C; optional warm rinse and 5–10 min rest; steeps 1–3 at 15–40 s, later 60–120 s, adding 10–30 s; 6–9 steeps by style. Checked against quotes in the earlier chat; not re-read in this audit (its link is down). Imputed long steep: as fresh and pressed white.</td>
           </tr>
           <tr>
-            <td class="nm"><span class="zh" lang="zh">乌龙茶</span> <span class="py">wūlóngchá</span><br>Oolong</td>
+            <td class="nm"><span class="nm-en">Oolong</span><span class="zh" lang="zh">乌龙茶</span><span class="py">wūlóngchá</span></td>
             <td class="num"><span class="ml">175°F light<br>212°F dark</span><span class="ms">212°F</span></td>
-            <td>Not in sources</td>
+            <td>Skim foam off the 1st<br><small>GB/T 23776</small></td>
             <td class="num v-short vs">3.3 g</td>
             <td class="num v-short">5 s<br><small>rolled 10 s</small></td>
             <td class="num v-short">10 s ×3, 20 s ×3, then 40 s ×2<br><small>9 steeps</small></td>
-            <td class="num v-long vs">Not in sources</td>
+            <td class="num v-long vs"><span class="imp">1.06 g</span></td>
             <td class="num v-long">3–4 min</td>
-            <td class="num v-long">Not in sources</td>
-            <td class="basis">Chayu guide: 1:30 in a clay pot, 100°C every steep; unrolled 5 s, rolled 10 s, then 10 s ×3, 20 s ×3, 40 s ×2. Harney &amp; Sons: 175°F for lighter and 212°F for darker oolong, 3–4 min; it gives no leaf weight.</td>
+            <td class="num v-long"><span class="imp">Longer each time<br><small>3–4 brews</small></span></td>
+            <td class="basis">Chayu guide: 1:30 in a clay pot, 100°C every steep; unrolled 5 s, rolled 10 s, then 10 s ×3, 20 s ×3, 40 s ×2. Harney &amp; Sons: 175°F for lighter and 212°F for darker oolong, 3–4 min; it gives no leaf weight. GB/T 23776's oolong gaiwan method skims the foam off the first steep. Imputed long-steep leaf and resteeps: Saratoga's 5 g to 16 oz and its 2–3 or 2–4 re-steeps for green and black tea.</td>
           </tr>
           <tr>
-            <td class="nm"><span class="zh" lang="zh">红茶</span> <span class="py">hóngchá</span><br>Black</td>
+            <td class="nm"><span class="nm-en">Black</span><span class="zh" lang="zh">红茶</span><span class="py">hóngchá</span></td>
             <td class="num"><span class="ml">205°F</span><span class="ms">203°F<br><small>212°F on the 5th</small></span></td>
             <td>None; skim foam off the 1st</td>
             <td class="num v-short vs">3.3–5 g</td>
@@ -733,7 +735,7 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
             <td class="basis">Chayu guide, whole-leaf black: 1:30, 95°C 10 s ×4, then 100°C 15 s; usually 5; broken black is 1:50 and one steep. T/CSTEA 00050-2022 (Guangze black): about 1:20, foam skimmed, 5–6 steeps; not re-read in this audit (its link is down). Saratoga: 5 g to 12–16 oz, 205°F, 3–4 min, re-steep 2–4 times.</td>
           </tr>
           <tr>
-            <td class="nm"><span class="zh" lang="zh">生普</span> <span class="py">shēng pǔ</span><br>Raw pu-erh</td>
+            <td class="nm"><span class="nm-en">Raw pu-erh</span><span class="zh" lang="zh">生普</span><span class="py">shēng pǔ</span></td>
             <td class="num"><span class="ml">190–195°F</span><span class="ms">212°F</span></td>
             <td>Rinse once, about 20 s</td>
             <td class="num v-short vs">6 g</td>
@@ -745,7 +747,7 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
             <td class="basis">Chayu guide: 100°C, in a gaiwan; pressed 10 s, loose 5 s, then the sequence shown; "usually 7" steeps, 10 listed. Yunnan Sourcing: 6 g per 100 ml, 95–100°C, rinse raw once for about 20 s. Saratoga: 5 g to 16 oz, 195°F, 3 min, +15–30 s, 6–8 infusions. Smith Teamaker: 190°F, 3 min.</td>
           </tr>
           <tr>
-            <td class="nm"><span class="zh" lang="zh">熟普</span> <span class="py">shú pǔ</span><br>Ripe pu-erh</td>
+            <td class="nm"><span class="nm-en">Ripe pu-erh</span><span class="zh" lang="zh">熟普</span><span class="py">shú pǔ</span></td>
             <td class="num"><span class="ml">205–212°F</span><span class="ms">212°F</span></td>
             <td>Rinse twice, about 15 s each</td>
             <td class="num v-short vs">6 g</td>
@@ -757,26 +759,28 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
             <td class="basis">Chayu guide: 100°C every steep, 5 s, 10 s ×3, 15 s ×3; 7 steeps; a clay pot suits it. Yunnan Sourcing: 6 g per 100 ml, rinse ripe twice for about 15 s. Saratoga: 5 g to 16 oz, 205°F, 3 min, +15–20 s, 6–8 infusions. Smith Teamaker: 212°F, 5 min, 1 tsp per 8–10 oz.</td>
           </tr>
           <tr>
-            <td class="nm"><span class="zh" lang="zh">黑茶</span> <span class="py">hēichá</span><br>Other dark tea</td>
+            <td class="nm"><span class="nm-en">Other dark tea</span><span class="zh" lang="zh">黑茶</span><span class="py">hēichá</span></td>
             <td class="num">Simmer</td>
-            <td>Not in sources</td>
-            <td class="num v-short vs" colspan="3">Not in sources: Chayu simmers it</td>
+            <td><span class="imp">None</span></td>
+            <td class="num v-short vs"><span class="imp">6 g</span></td>
+            <td class="num v-short"><span class="imp">5 s</span></td>
+            <td class="num v-short"><span class="imp">10 s ×3, then 15 s ×3<br><small>7 steeps</small></span></td>
             <td class="num v-long vs">1–1.25 g</td>
             <td class="num v-long">Up to 3 min</td>
-            <td class="num v-long">Up to 3 min each<br><small>count not in sources</small></td>
-            <td class="basis">Chayu guide: simmer it, 1:80 to 1:100, no more than 3 min each time.</td>
+            <td class="num v-long">Up to 3 min each<br><span class="imp"><small>about 3 brews</small></span></td>
+            <td class="basis">Chayu guide: simmer it, 1:80 to 1:100, no more than 3 min each time. Imputed gongfu: as ripe pu-erh, also a fermented dark tea.</td>
           </tr>
           <tr>
-            <td class="nm"><span class="zh" lang="zh">花茶</span> <span class="py">huāchá</span><br>Scented</td>
+            <td class="nm"><span class="nm-en">Scented</span><span class="zh" lang="zh">花茶</span><span class="py">huāchá</span></td>
             <td class="num"><span class="ml">175–195°F</span><span class="ms">203°F<br><small>212°F from the 4th</small></span></td>
-            <td>Not in sources</td>
+            <td><span class="imp">None</span></td>
             <td class="num v-short vs">2 g</td>
             <td class="num v-short">10 s<br><small>pearls 15 s</small></td>
             <td class="num v-short">10 s ×2, then 20 s, 30 s<br><small>5 steeps</small></td>
             <td class="num v-long vs">1.06 g</td>
             <td class="num v-long">3–4 min</td>
-            <td class="num v-long">Not in sources</td>
-            <td class="basis">Chayu guide: in a gaiwan, 1:50, 95°C (pearls 15 s, loose 10 s), then 95°C 10 s ×2, 100°C 20 s, 100°C 30 s; 5 steeps. Saratoga, scented white: 5 g to 16 oz, 175–195°F, 3–4 min.</td>
+            <td class="num v-long">Longer each time<br><small>3 brews</small></td>
+            <td class="basis">Chayu guide: in a gaiwan, 1:50, 95°C (pearls 15 s, loose 10 s), then 95°C 10 s ×2, 100°C 20 s, 100°C 30 s; 5 steeps. Saratoga, scented white: 5 g to 16 oz, 175–195°F, 3–4 min. A Thirst for Tea, jasmine: 3 infusions, increasing the time and temperature slightly each time.</td>
           </tr>
         </tbody>
       </table>
@@ -812,6 +816,7 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
       <li><a href="https://www.jiemian.com/article/1041035.html">Pan Jiujiu, six-category brewing guide</a> (Jiemian, 2017-01-05, from 茶语网 Chayu), cited as "Chayu guide". Re-read in this audit. It says its times suit average taste and aren't a fixed standard.</li>
       <li>Curious Tea (London): <a href="https://www.curioustea.com/tea/white-tea/yue-guang-bai-white-moonlight-cake/">Yue Guang Bai white moonlight cake</a> and <a href="https://www.curioustea.com/tea/white-tea/bai-mu-dan-white-peony-cake/">Bai Mu Dan white peony cake</a>: "2.5g in 250ml water at 90°C for 3-4 minutes"; gongfu 5 g and 3 g per 100 ml at 90–95°C, 20 s, longer each time.</li>
       <li>Saratoga Tea &amp; Honey: <a href="https://www.saratogateaandhoney.com/blogs/how-to-brew-tea/how-to-brew-white-tea">white</a>, <a href="https://www.saratogateaandhoney.com/blogs/how-to-brew-tea/how-to-brew-green-tea">green</a>, <a href="https://www.saratogateaandhoney.com/blogs/how-to-brew-tea/how-to-brew-black-tea">black</a> and <a href="https://www.saratogateaandhoney.com/blogs/how-to-brew-tea/how-to-brew-pu-erh-aged-tea">pu-erh</a> brewing guides.</li>
+      <li>A Thirst for Tea: <a href="https://www.athirstfortea.com/pages/white-peony-classic-long-preparation">white peony, classic long preparation</a> (3–4 infusions, longer and hotter each time) and <a href="https://www.athirstfortea.com/pages/jasmine-tea-preparation">jasmine tea preparation</a> (3 infusions).</li>
       <li><a href="https://www.smithtea.com/blogs/brew-guides/pu-erh-brew-guide">Smith Teamaker, Pu-erh brew guide</a>. <a href="https://yunnansourcing.com/pages/brewing-guide-for-green-black-oolong-and-pu-erh-teas">Yunnan Sourcing, brewing guide</a> (6 g per 100 ml; rinses).</li>
       <li>Harney &amp; Sons, <a href="https://www.harney.com/blogs/news/ultimate-tea-brewing-guide-how-to-make-tea">The Ultimate Tea Brewing Guide</a> (oolong 3–4 min).</li>
       <li><a href="https://en.wikipedia.org/wiki/ISO_3103">ISO 3103</a> (Wikipedia): 2 g per 100 ml of boiling water, 6 min for black tea; "not meant to define the proper method for brewing tea intended for general consumption".</li>
@@ -909,13 +914,13 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
   var R={
     green:{short:[2,2],long:[1.06,1.06],why:{short:"1 g per 50 ml (Chayu guide).",long:"5 g to 16 oz, 1.06 g per 100 ml (Saratoga)."}},
     white:{short:[2,5],long:[1,1.06],why:{short:"1 g per 50 ml (Chayu guide) to 5 g per 100 ml (Curious Tea, moonlight cake).",long:"2.5 g in 250 ml (Curious Tea) to 5 g to 16 oz (Saratoga)."}},
-    aged:{short:[3.6,5.6],long:null,why:{short:"1 g per 18–28 ml (T/MCYX 012-2024; not re-read in the audit).",long:"No long-steep ratio in these sources."}},
-    oolong:{short:[3.3,3.3],long:null,why:{short:"1 g per 30 ml (Chayu guide).",long:"No long-steep ratio in these sources; Harney gives no weight."}},
+    aged:{short:[3.6,5.6],long:[1,1],imp:{long:1},why:{short:"1 g per 18–28 ml (T/MCYX 012-2024; not re-read in the audit).",long:"Claude-imputed: as fresh and pressed white tea."}},
+    oolong:{short:[3.3,3.3],long:[1.06,1.06],imp:{long:1},why:{short:"1 g per 30 ml (Chayu guide).",long:"Claude-imputed: Saratoga's 5 g to 16 oz for other teas; Harney gives no weight."}},
     black:{short:[3.3,5],long:[1.06,1.41],why:{short:"1 g per 30 ml (Chayu guide) to about 1 g per 20 ml (T/CSTEA 00050-2022; not re-read in the audit).",long:"5 g to 12–16 oz (Saratoga)."}},
     raw:{short:[6,6],long:[1.06,1.06],why:{short:"6 g per 100 ml (Yunnan Sourcing).",long:"5 g to 16 oz (Saratoga)."}},
     ripe:{short:[6,6],long:[1.06,1.06],why:{short:"6 g per 100 ml (Yunnan Sourcing).",long:"5 g to 16 oz (Saratoga)."}},
     scented:{short:[2,2],long:[1.06,1.06],why:{short:"1 g per 50 ml (Chayu guide).",long:"5 g to 16 oz for scented white (Saratoga)."}},
-    dark:{short:null,long:[1,1.25],why:{short:"Not in sources: the Chayu guide simmers it.",long:"Simmered at 1 g per 80–100 ml (Chayu guide)."}}
+    dark:{short:[6,6],long:[1,1.25],imp:{short:1},why:{short:"Claude-imputed: as ripe pu-erh (the Chayu guide simmers it).",long:"Simmered at 1 g per 80–100 ml (Chayu guide)."}}
   };
   var vol=document.getElementById("c-vol"),typ=document.getElementById("c-type");
   var out=document.getElementById("c-out"),why=document.getElementById("c-why");
@@ -926,9 +931,9 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
     if(!(v>0)){out.textContent="–";why.textContent="Enter the water volume in ml.";return;}
     var d=R[typ.value],m=state.mode==="long"?"long":"short",a=d[m];
     var head="For "+fmt(v)+" ml, "+(m==="long"?"long steeps":"gongfu")+": ";
-    if(!a){out.textContent="Not in sources";why.textContent=head+d.why[m];return;}
     var lo=r1(a[0]*v/100),hi=r1(a[1]*v/100);
     out.textContent=(lo===hi?fmt(lo):fmt(lo)+"–"+fmt(hi))+" g";
+    out.classList.toggle("imp",!!(d.imp&&d.imp[m]));
     why.textContent=head+d.why[m];
   }
   [vol,typ].forEach(function(el){el.addEventListener("input",calc);el.addEventListener("change",calc);});

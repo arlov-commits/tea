@@ -19,8 +19,10 @@ This chart is a source of truth. Every value on it is one of:
 
 No guesses, no "if I remember correctly", no unlabelled general knowledge. If
 a fact can be looked up, look it up before writing it, in chat as well as on
-the page. If no source gives a value, write "Not in sources" rather than
-filling the cell.
+the page. If no source gives a value, impute one by the method in `AUDIT.md` (Rule 3)
+and wrap it in `<span class="imp">`, which styles it as Claude-imputed; say
+how it was imputed in the Basis column or legend. Never leave a plain value
+that no source backs.
 
 When sources disagree, don't pick by feel. `AUDIT.md` holds the two fixed
 rules (the tea's own package, then a source for that tea, then a type-level
