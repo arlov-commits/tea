@@ -5,7 +5,7 @@ point of this file is to make audits converge: a later pass checks each line
 here against its source instead of re-deriving the chart, and changes a value
 only when a quote changes or a better-ranked source turns up.
 
-Last full audit: 2026-09-25. Imputation pass: 2026-09-25.
+Last full audit: 2026-09-25. Imputation pass: 2026-09-25. Shifeng, Yanbo and Nanjia teas added: 2026-10-30.
 
 ## Why earlier passes kept shifting
 
@@ -83,6 +83,14 @@ Where no source fits, impute rather than leave the cell empty, in this order:
 | ISO | ISO 3103, Wikipedia | R |
 | Kexin | Yun Wuxin, Kexin Food and Health Information Center, 2018-09-12 | R |
 | Ayakdaş | Ayakdaş & Ağagündüz, Foods 2025, PMC12248710, Table 2 | R |
+| HZ-2018 | Hangzhou.com.cn, 2018-04-20 (from 都市快报), 谷雨 and 雨前龙井, https://hznews.hangzhou.com.cn/chengshi/content/2018-04/20/content_6852054_0.htm | R |
+| HZ-2015 | Hangzhou.com.cn, 2015-01-06 (from 今日早报), 狮峰龙井 ruling, https://hznews.hangzhou.com.cn/shehui/content/2015-01/06/content_5598467_2.htm | R |
+| Anji News | 安吉白茶怎么泡好喝, ajnews.zjol.com.cn, 2017-03-23, https://ajnews.zjol.com.cn/ajnews/system/2017/03/23/021133528.shtml | R |
+| MOA | Ministry of Agriculture, 天目湖白茶, 2017-04-12, https://www.moa.gov.cn/ztzl/zgnyppfzlt/ppgs/201704/t20170412_5558465.htm | R |
+| DB32/T 1264 | SAMR standards platform, DB32/T 1264-2017 天目湖白茶质量分级 (replaces 2008), https://std.samr.gov.cn/db/search/stdDBDetailed?id=91D99E4D8E562E24E05397BE0A0A3A10 | R |
+| DB35/T 1545 | 武夷岩茶冲泡与品鉴方法 (Fujian, 2015), text as reproduced at https://m.chabaike.com/biaozhun/6584.html | R |
+| Meimei | Meimei Fine Teas, Wuyi oolong brewing guide, https://www.meimeitea.com/pages/wuyi-oolong-tea-brewing-guide | R |
+| EU-Wuyi | EU GI technical specification, Wuyi Yan Cha, https://ec.europa.eu/geographical-indications-register/eambrosia-public-api/api/v1/attachments/65631 | R |
 | Zhang | Zhang et al., J. Food Sci. 2026, PMC13147319 | R |
 | T/MCYX | T/MCYX 012-2024, aged white tea brewing guide (ttbz link 404, host blocked here) | C |
 | T/CSTEA | T/CSTEA 00050-2022, Guangze black tea brewing (ttbz link 404, host blocked here) | C |
@@ -115,6 +123,14 @@ Where no source fits, impute rather than leave the cell empty, in this order:
 - **Ayakdaş**, Table 2, mg per 200 ml (2 g in 200 ml): white 80°C 5.8 / 26 / 24, 100°C 16 / 22 / 31; green 80°C 11 / 23 / 28, 100°C 15 / 25 / 27; black 80°C 14 / 23 / 28, 100°C 17 / 23 / 27; oolong 80°C 4 / 11 / 19, 100°C 14 / 25 / 29; pu-erh 80°C 13 / 25 / 38, 100°C 19 / 28 / 40 (at 2 / 5 / 10 min). "Brewing temperature made a statistically significant difference only in oolong tea." "Single-infusion brewing procedures … may not ensure complete extraction of caffeine".
 - **Thirst, white peony long**: "1 heaping Tbl. (2.5 to 3 grams)" per 6 fl oz, "Near boiling", "2-3 minutes", "Increase the time and temperature slightly with each subsequent infusion", "3-4" infusions.
 - **Thirst, jasmine**: "1 rounded tsp. (2.5 grams)" per 6 fl oz, "160-175 degrees", "1-3 minutes", "3" infusions, "Increase the time and temperature slightly with each subsequent infusion."
+- **HZ-2018**: "“雨前龙井”，说的正是“谷雨”这个节气以前所采的龙井茶"; "谷雨后，茶叶的质量就变差了"; "“清明”、“谷雨”往往被用来作为龙井茶好次区分的界定".
+- **HZ-2015**: the name centres on 狮子峰; the court: "他人有权正当使用", "不宜由某一企业独占".
+- **Anji News**: "水温不宜太高，一般掌握在80-85℃为宜"; "透明玻璃杯"; "每个杯中投入3克左右白茶"; "水量约为杯子的四分之一"; "遥香约0.5分钟"; "加水量控制在约占杯子的三分之二为宜。冲泡后静放2分钟".
+- **Wikipedia zh, 天目湖白茶**: "1990年代，溧阳玉枝园率先引种安吉白茶". **Wikipedia, Anji bai cha**: "called 'white' tea although it is a green tea"; leaves "turn a jade-white colour during the low-temperature seasons".
+- **MOA**: "外形细秀略扁，色泽绿润，透显金黄"; "汤色鹅黄".
+- **DB35/T 1545**: 6.1 "泡茶容器（盖杯或紫砂壶）的大小以100ml～150ml为佳"; 6.3 "水温以现开现泡为佳"; 6.4 "投茶量一般为1:7～1:22的茶水比，即投茶量5g～15g/110ml"; Table 1 (110 ml): 较淡 5 g 20:30:45 or 8 g 10:15:20; 中等 8 g 20:30:45 or 10 g 10:15:20; 较浓 10 g 20:30:45 or 12 g 10:15:20 (s, steeps 1–3; the reproduction flattens the table, read as each strength's two rows); 注2 "第四泡后每泡的浸泡时间都比上泡适当延长"; 6.7 "第一泡冲水后需刮沫，第二泡以后无需刮沫".
+- **Meimei**: gongfu "8 grams … per 100ml", "212°F for 10s, 10s, 10s, 20s, 20s", "up to 8 infusions"; grandpa style 4 g to 6 oz (no flask-like long steep).
+- **EU-Wuyi**: "Wuyi Yan Cha (Wuyi Rock Tea) belongs to Oolong tea"; five categories Dahongpao, Mingcong, Rougui, Shuixian, Qizhong; "charcoal baking".
 - **Zhang**: "Caffeine content was significantly higher in GTI2 than in other infusions"; cites Horžić et al. 2009, "sequential 50% reductions in caffeine content with each successive infusion".
 
 ## Pressed chart
@@ -190,6 +206,26 @@ the 10 s pu-erh wash (replaced by YS); the two-flask routine section.
 | Black goji | Time, refills | about 3–5 min; refill until the colour fades, 2–3 brews | Imputed from popular health guides (Baidu Health; not authoritative) | I |
 | Black goji | Colour | purple near neutral, bluer when alkaline | Deng et al., Molecules 2022 | R |
 | Mystery tea | Start | 175°F, 5 g, 2 min | D: Sar-green's Chinese-green setting, the coolest and shortest long steep here | D |
+| Shifeng 雨前 Longjing | all brewing | as Longjing above | same sources (China Tea Museum, Jiemian, Sar-green, Kexin) | R |
+| Shifeng 雨前 Longjing | 雨前, 狮峰 | picked before 谷雨; 狮峰 names an origin no one firm may own | HZ-2018, HZ-2015 | R |
+| Shifeng 雨前 Longjing | Bag | 龙井茶 (not 西湖龙井茶); 杭州亚运会官方指定用茶 | LABEL (front of bag only) | LABEL |
+| Shifeng 雨前 Longjing | Caffeine | ~28 mg | Ayakdaş green at 80°C, 2 min: 11 ×2.5 | D |
+| Yanbo 黄金白茶 | Identity | 烟波白茶（绿茶）; 绿茶鲜叶; DB32/T1264-2008; 62.5 g; 12 months; about 5°C, dry, dark | LABEL | LABEL |
+| Yanbo 黄金白茶 | Temp | 176–185°F | Anji News 2017, 80–85°C (Anji white tea; Tianmu Lake's cultivar came from Anji, Wikipedia zh) | R |
+| Yanbo 黄金白茶 | Gongfu (glass) | about 3 g a glass; ¼-glass soak, swirl 0.5 min; fill to ⅔; 2 min | Anji News 2017 | R |
+| Yanbo 黄金白茶 | Gongfu leaf per 100 ml | 2 g | Imputed: 3 g in the China Tea Museum's 150 ml glass (Anji gives no glass size) | I |
+| Yanbo 黄金白茶 | Later rounds | top up at ⅓; weak by the 3rd | China Tea Museum 2020 (green tea in a glass) | R |
+| Yanbo 黄金白茶 | Flask | 5 g; 2 min; longer each time; 3–4 brews | Specific sources give no long steep, so Sar-green | R, D |
+| Yanbo 黄金白茶 | Category, look | a green tea from a white-leaf cultivar; dry leaf 绿润，透显金黄 | Wikipedia (Anji bai cha; 天目湖白茶 zh); MOA 2017 | R |
+| Yanbo 黄金白茶 | Standard | DB32/T 1264 = 天目湖白茶质量分级; 2008 edition replaced by 2017 | SAMR standards platform | R |
+| Yanbo 黄金白茶 | Caffeine | ~29 mg | Ayakdaş green at 82.5°C (11 → 15, 80 → 100°C), 2 min: 11.5 ×2.5 | D |
+| Nanjia 熊猫 武夷岩茶 | Identity | 武夷岩茶; 特级; GB/T18745; 17.6 g; made 2023/03/07; shelf life 五年; Wuyishan | LABEL | LABEL |
+| Nanjia 熊猫 武夷岩茶 | Gongfu | 212°F; 8 g per 110 ml (7.3 g per 100 ml); 20, 30, 45 s; longer after the 4th; skim foam on the 1st | DB35/T 1545 (6.3–6.7, Table 1, medium) | R, D |
+| Nanjia 熊猫 武夷岩茶 | Steep count | up to 8 | Meimei | R |
+| Nanjia 熊猫 武夷岩茶 | Flask | 212°F, 3–4 min | Harney, darker oolong (no ratio; no Wuyi or oolong source with a ratio gives a long steep) | R |
+| Nanjia 熊猫 武夷岩茶 | Flask leaf, resteeps | 5 g; longer each time, 3–4 brews | Imputed as the Guide's oolong row (Saratoga's 5 g to 16 oz and re-steeps for other types) | I |
+| Nanjia 熊猫 武夷岩茶 | Category | oolong, charcoal-baked; five kinds | EU GI spec | R |
+| Nanjia 熊猫 武夷岩茶 | Caffeine | ~49 mg | Ayakdaş oolong at 100°C, 3½ min: 14 → 25 (2 → 5 min), 19.5 ×2.5 | D |
 
 ## Guide tab
 
